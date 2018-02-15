@@ -68,6 +68,7 @@ public class Robot extends IterativeRobot {
 	private int motor_Box_Grabber_int = 6;
 	private int[] armDoubleSolenoid = {0,1};
 	
+	//This is another test comment
 	private int motor_Box_Riser_int = 7;
 	private int switch_Riser_Low_int = 8;
 	private int switch_Riser_Mid_int = 9;
