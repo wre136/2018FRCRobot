@@ -196,7 +196,7 @@ public class SwerveMotor
 	private void setupPIDControllers()
 	{
 		pidDrive = new PIDController(kPDrive, kIDrive, kDDrive, kFDrive, encDrive, motorDrive);
-		pidDrive.setOutputRange(-1, 1);
+		pidDrive.setOutputRange(-0.25, 0.25); //Set PID for Drive to output 1/4th power
 		pidDrive.setAbsoluteTolerance(5);
 		
 		pidTurn = new PIDController(kPTurn, kITurn, kDTurn, encTurn, motorTurn);
