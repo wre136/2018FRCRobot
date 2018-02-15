@@ -62,13 +62,11 @@ public class Robot extends IterativeRobot {
 	private int motor_RR_Turn_int = 3;
 	private int enc_RR_Turn_int = 3;
 	
-	//This is a test comment
 	private int motor_L_Arm_int = 4;
 	private int motor_R_Arm_int = 5;
 	private int motor_Box_Grabber_int = 6;
 	private int[] armDoubleSolenoid = {0,1};
 	
-	//This is another test comment
 	private int motor_Box_Riser_int = 7;
 	private int switch_Riser_Low_int = 8;
 	private int switch_Riser_Mid_int = 9;
