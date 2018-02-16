@@ -4,6 +4,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
+/**
+ * <h1> Box Collector Class </h1>
+ * @author William R Edds FRC 2461 - The METAL-SKINs
+ * <p>
+ * Box Collector subsystem that is used to suck in and spit out boxes
+ * </p>
+ */
 public class BoxCollector
 {
 	private SpeedController motorIntakeLeft;
@@ -19,6 +26,7 @@ public class BoxCollector
 	private State stateNow;
 	
 	/**
+	 * Creates a BoxCollector object.
 	 * @param motorLeft Left motor on arm
 	 * @param motorRight Right motor on arm
 	 * @param motorRear Motor to run wheels inside the box
@@ -35,6 +43,14 @@ public class BoxCollector
 		stateNow = State.BEGIN;
 	}
 	
+	/**
+	 * This is the method that runs the box collector in teleop.
+	 * 
+	 * <p>
+	 * Call this method in teleop to run the box collector using
+	 * the State Machine mechanics and controller input.
+	 * </p>
+	 */
 	public void run() {
 		switch(stateNow) {
 			case BEGIN:
@@ -60,29 +76,55 @@ public class BoxCollector
 		}
 	}
 	
+	/**
+	 * Method for the BEGIN State of the box collector state machine.
+	 * <p>
+	 * It stops the box collector motor, extends the arms, and sets
+	 * the state to REST.
+	 * </p>
+	 */
 	private void begin()
 	{
-		ramDeploy.set(DoubleSolenoid.Value.kForward);
-		setMotorSpeed(0);
+		armsExtend();
+		stopBoxSucker();
 		stateNow = State.REST;
 	}
 	
+	/**
+	 * Method for the DEPLOYING State of the box collector state machine.
+	 * <p>
+	 * It extends the arms so that the robot can grab boxes ahead of it.
+	 * </p>
+	 */
 	private void deploying() {
-		ramDeploy.set(DoubleSolenoid.Value.kReverse);
+		armsExtend();
 		stateNow = State.REST;
 	}
 	
+	/**
+	 * Method for the REST State of the box collector state machine.
+	 * <p>
+	 * This is the state where the collector will not be doing anything.
+	 * Based on controller inputs
+	 * <ul>
+	 * <li>The <b>right trigger</b> will suck boxes in and move
+	 * the Collector state machine to SUCK_IN </li>
+	 * <li>The <b>left trigger</b> will spit boxes out and move 
+	 * the Collector state machine to SPIT_OUT </li> 
+	 * </ul>
+	 * </p>
+	 */
 	private void rest() {
 		if(player.getTriggerAxis(Hand.kRight) == 1 && player.getTriggerAxis(Hand.kLeft) == 1) {
 			return;
 		} else if(player.getTriggerAxis(Hand.kRight) == 1) {
-			setMotorSpeed(1);
+			suckBoxIn();
 			stateNow = State.SUCK_IN;
 		} else if(player.getTriggerAxis(Hand.kLeft) == 1) {
-			setMotorSpeed(-1);
+			spitBoxOut();
 			stateNow = State.SPIT_OUT;
 		} else if(player.getAButton()){
-			ramDeploy.set(DoubleSolenoid.Value.kForward);
+			armsRetract();
 			stateNow = State.RETRACT;
 		}
 	}
