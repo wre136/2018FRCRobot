@@ -3,53 +3,56 @@ package org.usfirst.frc.team2461.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedController;
 
+/**
+ * <h1> Robot Lifter Class </h1>
+ * @author William R Edds FRC 2461 - The METAL-SKINs
+ * <p>
+ * 2018 season Robot Lifter subsystem that is lift the robot.
+ * </p>
+ */
 public class RobotLift
 {
 	private SpeedController[] motor = new SpeedController[2];
-	private DigitalInput limitSwitchBottom;
-	private DigitalInput limitSwitchTop;
 	private MetalSkinsController player;
 	
 	private enum State {
-		BEGIN, LOW, LOWERING, HIGH, LIFTING, IDLE
+		BEGIN, LOWERING, LIFTING, IDLE
 	}
 	
 	private State stateNow;
 	
 	/**
+	 * Creates a RobotLifter object that has a middle switch.
 	 * @param motor1 Motor 1
 	 * @param motor2 Motor 2
-	 * @param limistSwitchBottomIn Limit switch for the bottom
-	 * @param limitSwitchTopIn Limit switch for the top
 	 * @param playerIn MetalSkinsController to control the robot lift
 	 */
-	public RobotLift(SpeedController motor1, SpeedController motor2, DigitalInput limistSwitchBottomIn, DigitalInput limitSwitchTopIn, MetalSkinsController playerIn)
+	public RobotLift(SpeedController motor1, SpeedController motor2, MetalSkinsController playerIn)
 	{
 		motor[0] = motor1;
 		motor[1] = motor2;
-		limitSwitchBottom = limistSwitchBottomIn;
-		limitSwitchTop = limitSwitchTopIn;
 		player = playerIn;
 		stateNow = State.BEGIN;
-		setMotor(0);
 	}
 	
+	/**
+	 * This is the method that runs the Robot Lifter in Teleop.
+	 * 
+	 * <p>
+	 * Call this method in Teleop to run the Robot Lifter using
+	 * the State Machine mechanics and controller input.
+	 * </p>
+	 */
 	public void run() {
 		switch(stateNow) {
 			case BEGIN:
 				begin();
-				break;
-			case HIGH:
-				high();
 				break;
 			case IDLE:
 				idle();
 				break;
 			case LIFTING:
 				lifting();
-				break;
-			case LOW:
-				low();
 				break;
 			case LOWERING:
 				lowering();
@@ -60,64 +63,76 @@ public class RobotLift
 		}
 	}
 	
+	/**
+	 * Method for the BEGIN State of the Robot Lifter state machine.
+	 * <p>
+	 * It stops the Robot Lifter motors and sets
+	 * the state to IDLE.
+	 * </p>
+	 */
 	private void begin() {
-		setMotor(0);
-		if(!limitSwitchBottom.get()) {
-			stateNow = State.LOW;
-		} else if(!limitSwitchTop.get()) {
-			stateNow = State.HIGH;
-		} else {
-			stateNow = State.IDLE;
-		}
+		stopLift();
+		stateNow = State.IDLE;
 	}
 	
+	/**
+	 * Method for the IDLE State of the Robot Lifter state machine.
+	 * <p>
+	 * This is the state where the Robot Lifter will not be doing anything.
+	 * </p>
+	 * <p>
+	 * Based on controller inputs:
+	 * <ul>
+	 * <li>The <b>Y Button</b> will raise the robot and move 
+	 * the Robot Lifter state machine to LIFTING </li>
+	 * <li>The <b>X Button</b> will lower the robot and move 
+	 * the Robot Lifter state machine to LOWERING </li> 
+	 * </ul>
+	 * </p>
+	 */
 	private void idle() {
 		if(player.getYButton() && player.getXButton()) {
 			return;
 		} else if(player.getYButton()) {
-			setMotor(1);
+			liftRobot();
 			stateNow = State.LIFTING;
 		} else if(player.getXButton()) {
-			setMotor(-1);
+			lowerRobot();
 			stateNow = State.LOWERING;
 		}
 	}
 	
+	/**
+	 * Method for the LIFTING State of the Robot Lifter state machine.
+	 * <p>
+	 * This is the state where the Robot Lifter will be lifting.
+	 * </p>
+	 * <p>
+	 * Based on controller inputs, letting go of the <b>Y Button</b> will 
+	 * stop the lifter and move the Robot Lifter state machine to IDLE.
+	 * </p>
+	 */
 	private void lifting() {
-		if(limitSwitchTop.get()) {
-			if(!player.getYButton()) {
-				setMotor(0);
-				stateNow = State.IDLE;
-			}
-		} else {
-			setMotor(0);
-			stateNow = State.HIGH;
+		if(!player.getYButton()) {
+			stopLift();
+			stateNow = State.IDLE;
 		}
 	}
 	
+	/**
+	 * Method for the LOWERING State of the Robot Lifter state machine.
+	 * <p>
+	 * This is the state where the Robot Lifter will be lowering.
+	 * </p>
+	 * <p>
+	 * Based on controller inputs, letting go of the <b>X Button</b> will 
+	 * stop the lifter and move the Robot Lifter state machine to IDLE.
+	 * </p>
+	 */
 	private void lowering() {
-		if(limitSwitchBottom.get()) {
-			if(!player.getXButton()) {
-				setMotor(0);
-				stateNow = State.IDLE;
-			}
-		} else {
-			setMotor(0);
-			stateNow = State.LOW;
-		}
-	}
-	
-	private void high() {
-		if(player.getXButton()) {
-			setMotor(-1);
-			stateNow = State.LOWERING;
-		}
-	}
-	
-	private void low() {
-		if(player.getYButton()) {
-			setMotor(1);
-			stateNow = State.LIFTING;
+		if(!player.getXButton()) {
+			stopLift();
+			stateNow = State.IDLE;
 		}
 	}
 	
@@ -130,22 +145,58 @@ public class RobotLift
 		return stateNow;
 	}
 	
+	/**
+	 * Returns the current state of the Robot Lifter State Machine as a String object
+	 * @return Current state of the Robot Lifter state machine as a String object
+	 */
 	public String getStateString() {
 		switch(stateNow) {
 			case BEGIN:
 				return "BEGIN";
-			case HIGH:
-				return "HIGH";
 			case IDLE:
 				return "IDLE";
 			case LIFTING:
 				return "LIFTING";
-			case LOW:
-				return "LOW";
 			case LOWERING:
 				return "LOWERING";
 			default:
 				return "NULL";
 		}
+	}
+	
+	/**
+	 * Manual method to stop the Robot Lifter.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Robt Lifter State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
+	public void stopLift() {
+		setMotor(0);
+	}
+	
+	/**
+	 * Manual method to lift the Robot Lifter.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Robt Lifter State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
+	public void liftRobot() {
+		setMotor(1);
+	}
+	
+	/**
+	 * Manual method to lower the Robot Lifter.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Robt Lifter State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
+	public void lowerRobot() {
+		setMotor(-1);
 	}
 }
