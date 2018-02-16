@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  * <h1> Box Lifter Class </h1>
  * @author William R Edds FRC 2461 - The METAL-SKINs
  * <p>
- * Box Lifter subsystem that is used to raise and lower the box Collector
+ * 2018 season Box Lifter subsystem that is used to raise and lower the box Collector
  * </p>
  */
 public class BoxLifter

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
  * <h1> Box Collector Class </h1>
  * @author William R Edds FRC 2461 - The METAL-SKINs
  * <p>
- * Box Collector subsystem that is used to suck in and spit out boxes
+ * 2018 season Box Collector subsystem that is used to suck in and spit out boxes
  * </p>
  */
 public class BoxCollector
