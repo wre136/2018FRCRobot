@@ -74,8 +74,6 @@ public class Robot extends IterativeRobot {
 	
 	private int motor_Robot_Lifter_1_int = 8;
 	private int motor_Robot_Lifter_2_int = 9;
-	private int robot_Lifter_Switch_Bottom_int = 11;
-	private int robot_Lifter_Switch_Top_int = 12;
 	
 	
 	MetalSkinsController player1 = new MetalSkinsController(0, true);
@@ -126,9 +124,7 @@ public class Robot extends IterativeRobot {
 	
 	Talon lifterMotor1 = new Talon(motor_Robot_Lifter_1_int);
 	Talon lifterMotor2 = new Talon(motor_Robot_Lifter_2_int);
-	DigitalInput limitSwitchBottom = new DigitalInput(robot_Lifter_Switch_Bottom_int);
-	DigitalInput limitSwitchTop = new DigitalInput(robot_Lifter_Switch_Top_int);
-	RobotLift robotLift = new RobotLift(lifterMotor1, lifterMotor2, limitSwitchBottom, limitSwitchTop, player1);
+	RobotLift robotLift = new RobotLift(lifterMotor1, lifterMotor2, player1);
 	
 	public static Timer timer = new Timer();
 	
