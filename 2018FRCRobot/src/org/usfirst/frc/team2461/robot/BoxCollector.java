@@ -129,15 +129,35 @@ public class BoxCollector
 		}
 	}
 	
+	/**
+	 * Method for the SUCK_IN State of the box collector state machine.
+	 * <p>
+	 * This is the state where the collector will be sucking in boxes.
+	 * </p>
+	 * <p>
+	 * Based on controller inputs, letting go of the <b>right trigger</b> will stop the suction
+	 *  of boxes and move the Collector state machine to REST
+	 * </p>
+	 */
 	private void suckIn() {
 		if(player.getTriggerAxis(Hand.kRight) == 1) {
 			return;
 		} else {
-			setMotorSpeed(0);
+			stopBoxSucker();
 			stateNow = State.REST;
 		}
 	}
 	
+	/**
+	 * Method for the SPIT_OUT State of the box collector state machine.
+	 * <p>
+	 * This is the state where the collector will be spitting out boxes.
+	 * </p>
+	 * <p>
+	 * Based on controller inputs, letting go of the <b>left trigger</b> will 
+	 * stop the secretion of boxes and move the Collector state machine to REST
+	 * </p>
+	 */
 	private void spitOut() {
 		if(player.getTriggerAxis(Hand.kLeft) == 1) {
 			return;
@@ -147,18 +167,29 @@ public class BoxCollector
 		}
 	}
 	
+	/**
+	 * Method for the RETRACT State of the box collector state machine.
+	 * <p>
+	 * It withdraws the arms so that they are protected and the robot 
+	 * can not grab boxes ahead of it.
+	 * </p>
+	 * <p>
+	 * Based on controller inputs, letting go of the <b>A Button</b> will 
+	 * extend the arms and move the Collector state machine to REST
+	 * </p>
+	 */
 	private void retract() {
 		if(player.getAButton()) {
 			return;
 		} else {
-			ramDeploy.set(DoubleSolenoid.Value.kReverse);
+			armsExtend();
 			stateNow = State.REST;
 		}
 	}
 	
 	private void setMotorSpeed(double speed) {
 		motorIntakeLeft.set(speed);
-		motorIntakeRight.set(speed);
+		motorIntakeRight.set(-speed);
 		motorIntakeRear.set(speed);
 	}
 	
@@ -166,6 +197,10 @@ public class BoxCollector
 		return stateNow;
 	}
 	
+	/**
+	 * Returns the current state of the Box Collector State Machine as a String object
+	 * @return Current state of the Box Collector state machine as a String object
+	 */
 	public String getStateString() {
 		switch(stateNow) {
 			case BEGIN:
@@ -185,24 +220,64 @@ public class BoxCollector
 		}
 	}
 	
+	/**
+	 * Manual method to retract Box Collector Arms.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Box Collector State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
 	public void armsRetract() {
 		ramDeploy.set(DoubleSolenoid.Value.kReverse);
 		stateNow = State.REST;
 	}
 	
+	/**
+	 * Manual method to extend Box Collector Arms.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Box Collector State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
 	public void armsExtend() {
 		ramDeploy.set(DoubleSolenoid.Value.kForward);
 		stateNow = State.REST;
 	}
 	
+	/**
+	 * Manual method to spit out boxes.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Box Collector State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
 	public void spitBoxOut() {
 		setMotorSpeed(1);
 	}
 	
+	/**
+	 * Manual method to suck in boxes.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Box Collector State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
 	public void suckBoxIn() {
 		setMotorSpeed(-1);
 	}
 	
+	/**
+	 * Manual method to stop box suction and secretion.
+	 * <p>
+	 * <b>Using this method directly
+	 * bypasses the Box Collector State Machine which should be used in 
+	 * Teleop.</b> If in Teleop, use <b>run()</b> instead!
+	 * </p>
+	 */
 	public void stopBoxSucker() {
 		setMotorSpeed(0);
 	}
