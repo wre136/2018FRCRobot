@@ -198,4 +198,8 @@ public class RobotLift
 	public void lowerRobot() {
 		setMotor(1);
 	}
+	
+	public void reset() {
+		stateNow = State.BEGIN;
+	}
 }

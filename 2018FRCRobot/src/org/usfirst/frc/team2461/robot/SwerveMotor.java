@@ -279,7 +279,7 @@ public class SwerveMotor
 	private void setupPIDControllers()
 	{
 		pidDrive = new PIDController(kPDrive, kIDrive, kDDrive, kFDrive, encDrive, motorDrive);
-		pidDrive.setOutputRange(-0.25, 0.25); //Set PID for Drive to output 1/4th power
+		pidDrive.setOutputRange(-0.45, 0.45); //Set PID for Drive to output 1/4th power
 		pidDrive.setAbsoluteTolerance(5);
 		
 		pidTurn = new PIDController(kPTurn, kITurn, kDTurn, encTurn, motorTurn);
@@ -346,7 +346,7 @@ public class SwerveMotor
 			
 			if(pidDrive.onTarget()) { // if the wheels haven't driven as far as they need too
 				if(encDrive.getStopped()) {
-					pidDrive.reset();
+					//pidDrive.reset();
 					//encDrive.reset();
 				}	
 			} else { // If the wheels have gone the specified distance, reset and disable the PID loops
@@ -355,7 +355,7 @@ public class SwerveMotor
 			}
 		}
 		
-		return pidDrive.onTarget();
+		return pidDrive.onTarget() && pidDrive.isEnabled();
 	}
 	
 	/**
@@ -637,5 +637,9 @@ public class SwerveMotor
 
 	public TestState getTestState() {
 		return testState;
+	}
+	
+	public boolean getDriveOntarget() {
+		return pidDrive.onTarget() && encDrive.getStopped();
 	}
 }

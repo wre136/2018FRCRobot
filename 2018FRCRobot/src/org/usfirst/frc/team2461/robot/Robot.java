@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team2461.robot;
 
+import java.util.LinkedList;
+
 import org.usfirst.frc.team2461.robot.autonomous.AutoCode;
 import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAuto;
 import org.usfirst.frc.team2461.robot.autonomous.MoveLeftAuto;
@@ -119,8 +121,8 @@ public class Robot extends IterativeRobot {
 	DigitalInput riserSwitchLow = new DigitalInput(switch_Riser_Low_int);
 	DigitalInput riserSwitchMid = new DigitalInput(switch_Riser_Mid_int);
 	DigitalInput riserSwitchHigh = new DigitalInput(switch_Riser_High_int);
-	//BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchMid, riserSwitchHigh, player1);
-	BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchHigh, player1);
+	BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchMid, riserSwitchHigh, player1);
+	//BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchHigh, player1);
 	
 	Talon lifterMotor1 = new Talon(motor_Robot_Lifter_1_int);
 	Talon lifterMotor2 = new Talon(motor_Robot_Lifter_2_int);
@@ -155,10 +157,10 @@ public class Robot extends IterativeRobot {
 		chassis.setTurnPIDValues(2, 0.0345, 0.014, 0.017);
 		chassis.setTurnPIDValues(3, 0.0345, 0.012, 0.02);
 		
-		chassis.setDrivePIDValues(0, 0.04, 0.005, 0.001, 0);
-		chassis.setDrivePIDValues(1, 0.04, 0.005, 0.001, 0);
-		chassis.setDrivePIDValues(2, 0.04, 0.005, 0.001, 0);
-		chassis.setDrivePIDValues(3, 0.04, 0.005, 0.001, 0);
+		chassis.setDrivePIDValues(0, 0.1, 0.005, 0.001, 0);
+		chassis.setDrivePIDValues(1, 0.1, 0.005, 0.001, 0);
+		chassis.setDrivePIDValues(2, 0.1, 0.005, 0.001, 0);
+		chassis.setDrivePIDValues(3, 0.1, 0.005, 0.001, 0);
 		
 		timer.start();
 	}
@@ -327,15 +329,37 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("EncDriveCount", enc_FL_Drive.get());
 		SmartDashboard.putNumber("Encoder Distance", enc_FL_Drive.getDistance());
 		
+		SmartDashboard.putString("Box Collector State", boxCollector.getStateString());
 		SmartDashboard.putString("Box Lifter State", boxLifter.getStateString());
 		SmartDashboard.putString("Robot Lifter State", robotLift.getStateString());
-		SmartDashboard.putString("Auto State", autoCode.getStateString());
+		if(autoCode != null)
+			SmartDashboard.putString("Auto State", autoCode.getStateString());
+		
+		LinkedList<SwerveDriveAutoCommand> list = chassis.getAutoCommandList();
+		int count = 0;
+		if(list != null) {
+			for(SwerveDriveAutoCommand i: list) {
+				count++;
+				SmartDashboard.putString("AutoCommand " + count, i.SwerveDriveAutoCommandToString());
+			}
+		}
+		
+		SmartDashboard.putBoolean("Chassis Done", chassis.isDone());
+		
+		SmartDashboard.putBoolean("Box Lifter High Switch", boxLifter.getSwitchHigh());
+		SmartDashboard.putBoolean("Box Lifter Middle Switch", boxLifter.getSwitchMiddle());
+		SmartDashboard.putBoolean("Box Lifter Low Switch", boxLifter.getSwitchLow());
 	}
 	
 	@Override
 	public void disabledPeriodic()
 	{
 		chassis.reset();
+		boxLifter.reset();
+		boxCollector.reset();
+		robotLift.reset();
+		if(autoCode != null)
+			autoCode.reset();
 	}
 	
 	@Override

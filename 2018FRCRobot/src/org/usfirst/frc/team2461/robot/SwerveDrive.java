@@ -18,6 +18,7 @@ public class SwerveDrive
 	 *   motor[3] = RearRight
 	 */
 	private SwerveMotor motor[] = new SwerveMotor[4];
+	private double POWER_FACTOR = 0.5;
 	
 	/**
 	 * List to hold all commands to be ran in driveAuto() method (Autonomous code)
@@ -100,7 +101,7 @@ public class SwerveDrive
 	    SmartDashboard.putNumber("Calculated Angle to turn", wa[0]);
 	    
 	    for (int i = 0; i < motor.length; i++) {
-	        motor[i].drive(wa[i], ws[i]);
+	        motor[i].drive(wa[i], ws[i]*POWER_FACTOR);
 	      }
 	}
 	
@@ -114,18 +115,19 @@ public class SwerveDrive
 		if(currentCommand == null && !autoCommands.isEmpty()) //if there is no current command but there are still commands in the list
 		{
 			currentCommand = autoCommands.poll(); //grab the next command
+			loadAutoCommand(currentCommand);
 			
 		} else if(autoCommands.isEmpty()) { //else if the list of commands is empty
 			return; //if the list of commands is empty, stop running this method
 		}
 		
-		driveByAutoCommand(currentCommand);
+		//driveByAutoCommand();
 		
 		if(isDone()) //If the command is done (motors reached their setpoints)
 		{
 			currentCommand = null; //Get rid of current command //Get rid of current command
 		} else {
-			driveByAutoCommand(currentCommand); // Sets the setpoints for the wheels and enables their PID loops
+			driveByAutoCommand(); // Sets the setpoints for the wheels and enables their PID loops
 		}
 	}
 	
@@ -148,22 +150,12 @@ public class SwerveDrive
 	 */
 	public boolean isDone()
 	{
-		return !motor[0].drivePID_IsEnable() && !motor[1].drivePID_IsEnable() && !motor[2].drivePID_IsEnable() && !motor[3].drivePID_IsEnable();
+		return motor[0].getDriveOntarget() && motor[1].getDriveOntarget() && motor[2].getDriveOntarget() && motor[3].getDriveOntarget();
+		//return !motor[0].drivePID_IsEnable() && !motor[1].drivePID_IsEnable() && !motor[2].drivePID_IsEnable() && !motor[3].drivePID_IsEnable();
 	}
 	
-	private void driveByAutoCommand(SwerveDriveAutoCommand command)
+	private void driveByAutoCommand()
 	{	
-		if(isDone())
-		{
-			for(int i = 0; i < 4; i++)
-			{
-				motor[i].setDirectionSetPoint(command.getDirectionSetpoint()[i]);
-				motor[i].setDistanceSetPoint(command.getDistanceSetpoint());
-				motor[i].resetPIDDrive();
-				motor[i].enableTurnPID();
-			}
-		}
-		
 		for(int i = 0; i < 4; i++)
 		{
 			motor[i].driveAuto();
@@ -299,5 +291,23 @@ public class SwerveDrive
 		for(int i = 0; i < 4; i++) {
 			motor[i].setDirectionSetPoint(direction);
 		}
+	}
+	
+	private void loadAutoCommand(SwerveDriveAutoCommand command) {
+		for(int i = 0; i < 4; i++)
+		{
+			motor[i].setDirectionSetPoint(command.getDirectionSetpoint()[i]);
+			motor[i].setDistanceSetPoint(command.getDistanceSetpoint());
+			motor[i].resetPIDDrive();
+			motor[i].enableTurnPID();
+		}
+	}
+	
+	public LinkedList<SwerveDriveAutoCommand> getAutoCommandList() {
+		return autoCommands;
+	}
+	
+	public void clearAutoCommands() {
+		autoCommands.clear();
 	}
 }

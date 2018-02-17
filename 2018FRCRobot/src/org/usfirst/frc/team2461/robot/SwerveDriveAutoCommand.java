@@ -24,4 +24,8 @@ public class SwerveDriveAutoCommand
 	{
 		return directionSetpoint;
 	}
+	
+	public String SwerveDriveAutoCommandToString() {
+		return distanceSetpoint + "";
+	}
 }

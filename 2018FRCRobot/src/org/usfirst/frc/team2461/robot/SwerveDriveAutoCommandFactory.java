@@ -34,7 +34,7 @@ public class SwerveDriveAutoCommandFactory
 	 */
 	public static SwerveDriveAutoCommand command_GoForward(double distance)
 	{
-		double[] direction = {0,0,0,0};
+		double[] direction = {180,180,180,180};
 		return new SwerveDriveAutoCommand(distance, direction) ;
 	}
 	
@@ -47,7 +47,7 @@ public class SwerveDriveAutoCommandFactory
 	public static SwerveDriveAutoCommand command_GoBackward(double distance)
 	{
 		double[] direction = {0,0,0,0};
-		return new SwerveDriveAutoCommand(-distance, direction) ;
+		return new SwerveDriveAutoCommand(distance, direction) ;
 	}
 	
 	/**
