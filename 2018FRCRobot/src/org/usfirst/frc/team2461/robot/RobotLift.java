@@ -184,7 +184,7 @@ public class RobotLift
 	 * </p>
 	 */
 	public void liftRobot() {
-		setMotor(1);
+		setMotor(-1);
 	}
 	
 	/**
@@ -196,6 +196,6 @@ public class RobotLift
 	 * </p>
 	 */
 	public void lowerRobot() {
-		setMotor(-1);
+		setMotor(1);
 	}
 }

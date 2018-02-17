@@ -41,6 +41,10 @@ public class SwerveDrive
 		motor = new SwerveMotor[]{motorFL, motorFR, motorRL, motorRR};
 	}
 	
+	/**
+	 * 
+	 * @param motorIn
+	 */
 	public SwerveDrive(SwerveMotor[] motorIn)
 	{
 		motor = motorIn;
