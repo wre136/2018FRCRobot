@@ -36,7 +36,6 @@ public class BoxCollector
 	public BoxCollector(SpeedController motorLeft, SpeedController motorRight, SpeedController motorRear, DoubleSolenoid ramIn, MetalSkinsController playerIn) {
 		motorIntakeLeft = motorLeft;
 		motorIntakeRight = motorRight;
-		motorIntakeRight.setInverted(true);
 		motorIntakeRear = motorRear;
 		ramDeploy = ramIn;
 		player = playerIn;
@@ -255,7 +254,7 @@ public class BoxCollector
 	 * </p>
 	 */
 	public void spitBoxOut() {
-		setMotorSpeed(1);
+		setMotorSpeed(-1);
 	}
 	
 	/**
@@ -267,7 +266,7 @@ public class BoxCollector
 	 * </p>
 	 */
 	public void suckBoxIn() {
-		setMotorSpeed(-1);
+		setMotorSpeed(1);
 	}
 	
 	/**
