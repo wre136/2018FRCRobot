@@ -234,7 +234,7 @@ public class SwerveMotor
 	 */
 	public double getDistanceSetPoint()
 	{
-		return setPointDrive;
+		return pidDrive.getSetpoint();
 	}
 	
 	/**
