@@ -316,7 +316,7 @@ public class BoxLifter
 	 * Stops the box lifter by setting the motor to 0
 	 */
 	public void stop() {
-		motorLifter.set(0);;
+		motorLifter.set(0);
 	}
 	
 	/**

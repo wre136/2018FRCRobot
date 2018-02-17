@@ -8,8 +8,11 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
 
 /**
+ * <h1> Swerve Motor Class </h1>
  * @author William R Edds FRC 2461 - The METAL-SKINs
- *
+ * <p>
+ * 2018 season Swerve Motor subsystem that is used in the Swerve Drive Subsystem for driving
+ * </p>
  */
 public class SwerveMotor
 {
@@ -41,6 +44,13 @@ public class SwerveMotor
 	private TestState testState;
 	
 	//Constructors
+	/**
+	 * Creates a Swerve Motor object
+	 * @param driveCanID CAN Bus ID for the TalonSRX that controls the drive motor
+	 * @param turnPWMChannel PWM Channel the controls the turning motor
+	 * @param encTurnIn MA3 type encoder that measures the turn angle
+	 * @param encDriveIn 
+	 */
 	public SwerveMotor(int driveCanID, int turnPWMChannel, MA3Encoder encTurnIn, Encoder encDriveIn)
 	{
 		motorDrive = new WPI_TalonSRX(driveCanID);

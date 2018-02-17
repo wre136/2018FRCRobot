@@ -229,7 +229,7 @@ public class BoxCollector
 	 * </p>
 	 */
 	public void armsRetract() {
-		ramDeploy.set(DoubleSolenoid.Value.kReverse);
+		ramDeploy.set(DoubleSolenoid.Value.kForward);
 		stateNow = State.REST;
 	}
 	
@@ -242,7 +242,7 @@ public class BoxCollector
 	 * </p>
 	 */
 	public void armsExtend() {
-		ramDeploy.set(DoubleSolenoid.Value.kForward);
+		ramDeploy.set(DoubleSolenoid.Value.kReverse);
 		stateNow = State.REST;
 	}
 	
