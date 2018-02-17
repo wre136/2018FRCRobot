@@ -47,9 +47,9 @@ public class SwerveMotor
 	/**
 	 * Creates a Swerve Motor object
 	 * @param driveCanID CAN Bus ID for the TalonSRX that controls the drive motor
-	 * @param turnPWMChannel PWM Channel the controls the turning motor
+	 * @param turnPWMChannel PWM Channel that controls the turning motor
 	 * @param encTurnIn MA3 type encoder that measures the turn angle
-	 * @param encDriveIn 
+	 * @param encDriveIn Encoder to measure distance travel
 	 */
 	public SwerveMotor(int driveCanID, int turnPWMChannel, MA3Encoder encTurnIn, Encoder encDriveIn)
 	{
@@ -62,6 +62,14 @@ public class SwerveMotor
 		setupPIDControllers();
 	}
 	
+	/**
+	 * Creates a Swerve Motor object
+	 * @param driveCanID CAN Bus ID for the TalonSRX that controls the drive motor
+	 * @param turnPWMChannel PWM Channel that controls the turning motor
+	 * @param encTurnIn MA3 type encoder that measures the turn angle
+	 * @param encDriveIn Encoder to measure distance travel
+	 * @param inverted True will run the motor backwards when positive power is applied
+	 */
 	public SwerveMotor(int driveCanID, int turnPWMChannel, MA3Encoder encTurnIn, Encoder encDriveIn, boolean inverted)
 	{
 		motorDrive = new WPI_TalonSRX(driveCanID);
@@ -74,6 +82,14 @@ public class SwerveMotor
 		setupPIDControllers();
 	}
 	
+	/**
+	 * Creates a Swerve Motor object
+	 * @param driveCanID The CAN Bus ID for the TalonSRX that controls the drive motor
+	 * @param turnPWMChannel The PWM Channel that controls the turning motor
+	 * @param encTurnAIChannel The Analog Channel for MA3 Encoder
+	 * @param encDriveDIOChannel0 The <b>A</b> DigitalInput channel for distance encoder
+	 * @param encDriveDIOChannel1 The <b>B</b> DigitalInput channel for distance encoder
+	 */
 	public SwerveMotor(int driveCanID, int turnPWMChannel, int encTurnAIChannel, int encDriveDIOChannel0, int encDriveDIOChannel1)
 	{
 		motorDrive = new WPI_TalonSRX(driveCanID);
@@ -85,6 +101,15 @@ public class SwerveMotor
 		setupPIDControllers();		
 	}
 	
+	/**
+	 * Creates a Swerve Motor object
+	 * @param driveCanID The CAN Bus ID for the TalonSRX that controls the drive motor
+	 * @param turnPWMChannel The PWM Channel that controls the turning motor
+	 * @param encTurnAIChannel The Analog Channel for MA3 Encoder
+	 * @param encDriveDIOChannel0 The <b>A</b> DigitalInput channel for distance encoder
+	 * @param encDriveDIOChannel1 The <b>B</b> DigitalInput channel for distance encoder
+	 * @param inverted True will run the motor backwards when positive power is applied
+	 */
 	public SwerveMotor(int driveCanID, int turnPWMChannel, int encTurnAIChannel, int encDriveDIOChannel0, int encDriveDIOChannel1, boolean inverted)
 	{
 		motorDrive = new WPI_TalonSRX(driveCanID);
@@ -97,6 +122,13 @@ public class SwerveMotor
 		setupPIDControllers();
 	}
 	
+	/**
+	 * Creates a Swerve Motor object
+	 * @param motorDriveIn The TalonSRX that controls the drive motor
+	 * @param motorTurnIn The Spark that controls the turning motor
+	 * @param encTurnIn MA3 type encoder that measures the turn angle
+	 * @param encDriveIn Encoder to measure distance travel
+	 */
 	public SwerveMotor(WPI_TalonSRX motorDriveIn, Spark motorTurnIn, MA3Encoder encTurnIn, Encoder encDriveIn)
 	{
 		motorDrive = motorDriveIn;
@@ -110,6 +142,14 @@ public class SwerveMotor
 		setupPIDControllers();
 	}
 	
+	/**
+	 * Creates a Swerve Motor object
+	 * @param motorDriveIn The TalonSRX that controls the drive motor
+	 * @param motorTurnIn The Spark that controls the turning motor
+	 * @param encTurnIn MA3 type encoder that measures the turn angle
+	 * @param encDriveIn Encoder to measure distance travel
+	 * @param inverted True will run the motor backwards when positive power is applied
+	 */
 	public SwerveMotor(WPI_TalonSRX motorDriveIn, Spark motorTurnIn, MA3Encoder encTurnIn, Encoder encDriveIn, boolean inverted)
 	{
 		motorDrive = motorDriveIn;
@@ -123,21 +163,38 @@ public class SwerveMotor
 	}
 	
 	//Accessors
+	/**
+	 * Gets the current angle the turn encoder detects
+	 * @return Angle the encoder detects in double format from 0 to 359.99 degrees
+	 */
 	public double getDirection()
 	{
 		return encTurn.getAngle();
 	}
 	
+	/**
+	 * Sets the direction setpoint that the turning PID loop will
+	 * try to turn the wheel too
+	 * @param setPoint A double value in the range of 0 to 359.99 degrees
+	 */
 	public void setDirectionSetPoint(double setPoint)
 	{
 		pidTurn.setSetpoint(setPoint);
 	}
 	
+/**
+ * Getting the direction the wheels are trying to get to
+ * @return double value in the range of 0 to 359.99 degrees
+ */
 	public double getDirectionSetPoint()
 	{
 		return pidTurn.getSetpoint();
 	}
 	
+	/**
+	 * Getting how far the robot has moved
+	 * @return double value represented as inches
+	 */
 	public double getDistanceTraveled()
 	{
 		return encDrive.getDistance();
@@ -171,16 +228,28 @@ public class SwerveMotor
 		pidDrive.setSetpoint(setPoint);
 	}
 	
+	/**
+	 * Getting how far the robot needs to move in inches
+	 * @return double value represented as inches
+	 */
 	public double getDistanceSetPoint()
 	{
 		return setPointDrive;
 	}
 	
+	/**
+	 * Getting how far away the robot is from the set distance
+	 * @return double value represented as inches
+	 */
 	public double getDistanceFromSetPoint()
 	{
 		return pidDrive.getError();
 	}
 
+	/**
+	 * When positive power is applied to driver motor it will spin them one way or the other
+	 * @param inverted true will spin the drive motor backwards, false will spin the drive motor forward
+	 */
 	private void setInverted(boolean inverted)
 	{
 		motorDrive.setInverted(inverted);
@@ -188,6 +257,10 @@ public class SwerveMotor
 		isInverted = inverted;
 	}
 	
+	/**
+	 * Shows whether the drive motors are inverted
+	 * @return true shows the drive motor will go backwards, false will show the drive motor going forward
+	 */
 	public boolean getInverted()
 	{
 		return isInverted;
@@ -220,7 +293,7 @@ public class SwerveMotor
 	
 	/**
 	 * Method to drive the wheel in normal teleop mode.
-	 * @param direction Direction in degree the wheel should turn. Value from 0 to 359
+	 * @param direction Direction in degree the wheel should turn. Value from 0 to 359.99
 	 * @param drivePower Speed wheel should be given. Value from -1 to 1
 	 */
 	public void drive(double direction, double drivePower)
@@ -297,36 +370,64 @@ public class SwerveMotor
 		pidDrive.disable();
 	}
 	
+	/**
+	 * Shows whether drivePID Loop is running or not
+	 * @return Boolean True means the drivePID Loop is running, false means it is not running
+	 */
 	public boolean drivePID_IsEnable()
 	{
 		return pidDrive.isEnabled();
 	}
 	
+	/**
+	 * Shows whether turnPID Loop is running or not
+	 * @return Boolean True means the turnPID Loop is running, false means it is not running
+	 */
 	public boolean turnPID_IsEnable()
 	{
 		return pidTurn.isEnabled();
 	}
 	
+	/**
+	 * Shows how far off a certain degree the turning motor is
+	 * @return double value the difference between the direction where should be at and where it as in degrees
+	 */
 	public double getPIDTurnError()
 	{
 		return pidTurn.getError();
 	}
 	
+	/**
+	 * Getting how far the robot has moved
+	 * @return double value represented as inches
+	 */
 	public double getDistance()
 	{
 		return encDrive.getDistance();
 	}
 	
+	/**
+	 * Getting the speed the drive motor is moving
+	 * @return double value returns inches per second
+	 */
 	public double getDriveSpeed()
 	{
 		return encDrive.getRate();
 	}
 	
+	/**
+	 * Shows how far off a certain speed the drive motor is
+	 * @return double value the difference between the speed where should be at and where it as in inches per second
+	 */
 	public double getDriveSpeedError()
 	{
 		return pidDrive.getError();
 	}
 	
+	/**
+	 * Shows what speed drive motor should be at
+	 * @return double value showing the speed drive motor should be at
+	 */
 	public double getDriveSpeedSetpoint()
 	{
 		if(encDrive.getPIDSourceType() == PIDSourceType.kRate) {
@@ -337,12 +438,18 @@ public class SwerveMotor
 		
 	}
 	
+	/**
+	 * resets PIDDrive and zeroes out are distance traveled
+	 */
 	public void resetPIDDrive()
 	{
 		pidDrive.reset();
 		encDrive.reset();
 	}
 	
+	/**
+	 * Disables PIDTurn preventing the turn motors to turn 
+	 */
 	public void resetPIDTurn() {
 		pidTurn.reset();
 	}
@@ -381,31 +488,59 @@ public class SwerveMotor
 		enableTurnPID();
 	}
 	
+	/**
+	 * Method used to set P, I, D, and F components of the DrivePID Values
+	 * @param P Double value between 0.0 and 1.0
+	 * @param I Double value between 0.0 and 1.0
+	 * @param D Double value between 0.0 and 1.0
+	 * @param F Double value between 0.0 and 1.0
+	 */
 	public void setDrivePIDValues(double P, double I, double D, double F)
 	{
 		pidDrive.setPID(P, I, D, F);
 	}
 	
+	/**
+	 * Method used to set P, I, and D components of the TurnPID Values
+	 * @param P Double value between 0.0 and 1.0
+	 * @param I Double value between 0.0 and 1.0
+	 * @param D Double value between 0.0 and 1.0
+	 */
 	public void setTurnPIDValues(double P, double I, double D)
 	{
 		pidTurn.setPID(P, I, D);
 	}
 	
+	/**
+	 * Returns the TurningPID Loop object
+	 * @return PIDContoller Object representing the TurningPID Loop
+	 */
 	public PIDController getTurnPID()
 	{
 		return pidTurn;
 	}
 	
+	/**
+	 * Returns the DrivePID Loop object
+	 * @return PIDContoller Object representing the DrivePID Loop
+	 */
 	public PIDController getDrivePID()
 	{
 		return pidDrive;
 	}
 	
+	/**
+	 * Stops the PIDDrive loop and the PIDTurn loop
+	 */
 	public void disable() {
 		pidDrive.reset();
 		pidTurn.reset();
 	}
 	
+	/**
+	 * Returns the law count of the Drive Encoder
+	 * @return Int Value
+	 */
 	public int getEncDriveCount() {
 		return encDrive.get();
 	}
@@ -436,11 +571,23 @@ public class SwerveMotor
 		}
 	}
 	
+	/**
+	 * Method for the BEGIN State of the testing code.
+	 * <p>
+	 * Sets the future TestTime to the current time plus 3 second to it
+	 * and then sets the state to DRIVE_TEST.
+	 * </p>
+	 */
 	private void testBegin() {
 		testState = TestState.DRIVE_TEST;
 		testTime = Robot.timer.get() + 3;
 	}
 	
+	/**
+	 * Tests the motion of the drive motor by running it full forward and the down to zero within 3 seconds
+	 * afterwards it disables Drive Motor and sets the future test time to the current time plus 3 seconds to it
+	 * sets the state to TURN_TEST
+	 */
 	private void testDrive() {
 		timeNow = Robot.timer.get();
 		if(timeNow < testTime) {
@@ -454,6 +601,11 @@ public class SwerveMotor
 		}
 	}
 	
+	/**
+	 * Tests the motion of the turning motor by Turning it to 120, 240, and 0 degrees within 3 seconds
+	 * afterwards it disables Turning Motor and
+	 * sets the state to END
+	 */
 	private void testTurn() {
 		timeNow = Robot.timer.get();
 		if(timeNow < testTime) {
@@ -482,6 +634,7 @@ public class SwerveMotor
 		testState = TestState.BEGIN;
 	}
 	
+
 	public TestState getTestState() {
 		return testState;
 	}
