@@ -24,6 +24,7 @@ public class BoxLifter
 	}
 	
 	private State stateNow;
+	private State statePrevious;
 	
 	private enum Mode {
 		AUTOMATIC, MANUAL
@@ -114,6 +115,7 @@ public class BoxLifter
 	 */
 	private void begin() {
 		stop();
+		statePrevious = State.BEGIN;
 			
 		if(getSwitchLow()) {
 			stateNow = State.LOW;
@@ -137,9 +139,11 @@ public class BoxLifter
 		if(player.getBumper(Hand.kRight)) {
 			rise();
 			stateNow = State.LIFTING;
+			statePrevious = State.IDLE;
 		} else if(player.getBumper(Hand.kLeft)) {
 			lower();
 			stateNow = State.LOWERING;
+			statePrevious = State.IDLE;
 		}
 	}
 	
@@ -160,22 +164,26 @@ public class BoxLifter
 	 */
 	private void lowering() {
 		if(mode == Mode.AUTOMATIC) { // If mode is Automatic
-			if(!switchMiddle.get()) {
+			if(getSwitchMiddle() && statePrevious != State.MIDDLE) {
 				stop();
 				stateNow = State.MIDDLE;
-			} else if(!switchLower.get()) {
+				statePrevious = State.LOWERING;
+			} else if(getSwitchLow()) {
 				stop();
 				stateNow = State.LOW;
+				statePrevious = State.LOWERING;
 			}
 		} else { // If mode is Manual
-			if(switchLower.get()) { // If not at the bottom
+			if(getSwitchLow()) { // If not at the bottom
 				if(!player.getBumper(Hand.kLeft)) { //If player lets go of the down button
 					stop(); //Turn motor off
 					stateNow = State.IDLE; // Set State to Idle
+					statePrevious = State.LOWERING;
 				}
 			} else { // Turn motor off and set State to Low
 				stop();
 				stateNow = State.LOW;
+				statePrevious = State.LOWERING;
 			}
 		}
 	}
@@ -197,22 +205,26 @@ public class BoxLifter
 	 */
 	private void lifting() {
 		if(mode == Mode.AUTOMATIC) { // if mode is Automatic
-			if(!switchMiddle.get()) {
+			if(getSwitchMiddle() && statePrevious != State.MIDDLE) {
 				stop();
 				stateNow = State.MIDDLE;
-			} else if(switchHigher.get()) {
+				statePrevious = State.LIFTING;
+			} else if(getSwitchHigh()) {
 				stop();
 				stateNow = State.HIGH;
+				statePrevious = State.LIFTING;
 			}
 		} else { // if mode is Manual
-			if(switchHigher.get()) { //if not at the Top
+			if(getSwitchHigh()) { //if not at the Top
 				if(!player.getBumper(Hand.kRight)) { // If player lets go of the up button
 					stop(); //Turn motor off
 					stateNow = State.IDLE; // Set State to Idle
+					statePrevious = State.LIFTING;
 				}
 			} else { // Turn off motor and set State to High
 				stop();
 				stateNow = State.HIGH;
+				statePrevious = State.LIFTING;
 			}
 		}
 		
@@ -231,6 +243,7 @@ public class BoxLifter
 		if(player.getBumper(Hand.kRight)) {
 			rise();
 			stateNow = State.LIFTING;
+			statePrevious = State.LOW;
 		}
 	}
 	
@@ -248,9 +261,11 @@ public class BoxLifter
 		if(player.getBumper(Hand.kRight)) {
 			rise();
 			stateNow = State.LIFTING;
+			statePrevious = State.MIDDLE;
 		} else if(player.getBumper(Hand.kLeft)) {
 			lower();
 			stateNow = State.LOWERING;
+			statePrevious = State.MIDDLE;
 		}
 	}
 	
@@ -266,6 +281,7 @@ public class BoxLifter
 		if(player.getBumper(Hand.kLeft)) {
 			lower();
 			stateNow = State.LOWERING;
+			statePrevious = State.HIGH;
 		}
 	}
 	
@@ -302,14 +318,14 @@ public class BoxLifter
 	 * Lowers the box lifter by setting the motor to -1 
 	 */
 	public void lower() {
-		motorLifter.set(-1);
+		motorLifter.set(1);
 	}
 	
 	/**
 	 * Lifts the box lifter by setting the motor to 1
 	 */
 	public void rise() {
-		motorLifter.set(1);
+		motorLifter.set(-1);
 	}
 	
 	/**
@@ -324,7 +340,7 @@ public class BoxLifter
 	 * @return True if the switch is flipped, false otherwise.
 	 */
 	public boolean getSwitchLow() {
-		return switchLower.get();
+		return !switchLower.get(); //Normally Open
 	}
 	
 	/**
@@ -332,7 +348,7 @@ public class BoxLifter
 	 * @return True if the switch is flipped, false otherwise.
 	 */
 	public boolean getSwitchHigh() {
-		return switchHigher.get();
+		return !switchHigher.get(); //Normally Open
 	}
 	
 	/**
@@ -340,6 +356,10 @@ public class BoxLifter
 	 * @return True if the switch is flipped, false otherwise.
 	 */
 	public boolean getSwitchMiddle() {
-		return switchMiddle.get();
+		return !switchMiddle.get(); //Normally Open
+	}
+	
+	public void reset() {
+		stateNow = State.BEGIN;
 	}
 }
