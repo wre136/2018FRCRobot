@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2461.robot.autonomous;
 
+import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
 
@@ -14,6 +15,7 @@ public class DriveForwardAuto implements AutoCode
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	
 	private double autoLineDistance = 60; //set to 60inches for testing purposes
+	private double futureTime;
 	
 	public DriveForwardAuto(SwerveDrive driveTrain)
 	{
@@ -42,16 +44,18 @@ public class DriveForwardAuto implements AutoCode
 	private void begin() {
 		chassis.clearAutoCommands();
 		chassis.addAutoCommand(factory.command_GoForward(autoLineDistance));
+		chassis.driveAuto();
 		autoState = State.DRIVE_FORWARD;
+		futureTime = Robot.timer.get() + 0.1;
 	}
 	
 	@SuppressWarnings("static-access")
 	private void driveForward() {
-		chassis.driveAuto();
-		
-		if(chassis.isDone()) {
-			autoState = State.STOP;
-			chassis.addAutoCommand(factory.command_Stop());
+		if(Robot.timer.get() > futureTime) { // Adding Delay to make sure autoCommand takes effect before checking
+			if(chassis.isDone()) {
+				autoState = State.STOP;
+				chassis.addAutoCommand(factory.command_Stop());
+			}
 		}
 	}
 	
