@@ -157,4 +157,44 @@ public class MoveLeftAuto implements AutoCode
 	private void boxIdle() {
 		
 	}
+
+	@Override
+	public String getStateString()
+	{
+		return drivingStateToString() + " " + boxCollectorStateToString();
+	}
+	
+	private String drivingStateToString() {
+		switch(drivingState) {
+			case BEGIN:
+				return "Driving State: Begin";
+			case DRIVE_FORWARD:
+				return "Driving State: Driving Forward";
+			case MOVE_LEFT:
+				return "Driving State: Moving Left";
+			case STOP:
+				return "Driving State: Stopped";
+			default:
+				return "NULL";
+		}
+	}
+	
+	private String boxCollectorStateToString() {
+		switch(boxCollectorState) {
+			case BEGIN:
+				return "Box Collector State: Begin";
+			case EXTENDING_ARMS:
+				return "Box Collector State: Extending Arms";
+			case IDLE:
+				return "Box Collector State: Idle";
+			case LOWERING:
+				return "Box Collector State: Lowering";
+			case RISING:
+				return "Box Collector State: Rising";
+			case SPIITING_OUT:
+				return "Box Collector State: Spitting Out";
+			default:
+				return "NULL";
+		}
+	}
 }

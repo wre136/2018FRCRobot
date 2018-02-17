@@ -57,4 +57,19 @@ public class DriveForwardAuto implements AutoCode
 	private void stop() {
 		chassis.driveAuto();
 	}
+
+	@Override
+	public String getStateString()
+	{
+		switch(autoState) {
+			case BEGIN:
+				return "Begin";
+			case DRIVE_FORWARD:
+				return "Driving Forward";
+			case STOP:
+				return "Stopped";
+			default:
+				return "NULL";			
+		}
+	}
 }
