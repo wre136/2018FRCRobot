@@ -4,4 +4,5 @@ public interface AutoCode
 {
 	public void run();
 	public String getStateString();
+	public void reset();
 }
