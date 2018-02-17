@@ -40,6 +40,7 @@ public class DriveForwardAuto implements AutoCode
 	
 	@SuppressWarnings("static-access")
 	private void begin() {
+		chassis.clearAutoCommands();
 		chassis.addAutoCommand(factory.command_GoForward(autoLineDistance));
 		autoState = State.DRIVE_FORWARD;
 	}
@@ -71,5 +72,10 @@ public class DriveForwardAuto implements AutoCode
 			default:
 				return "NULL";			
 		}
+	}
+	
+	public void reset() {
+		chassis.reset();
+		autoState = State.BEGIN;
 	}
 }
