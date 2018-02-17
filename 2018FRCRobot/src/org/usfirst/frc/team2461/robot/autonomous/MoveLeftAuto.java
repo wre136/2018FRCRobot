@@ -36,6 +36,8 @@ public class MoveLeftAuto implements AutoCode
 		chassis = chassisIn;
 		boxCollector = boxCollectorIn;
 		boxLifter = boxLifterIn;
+		drivingState = DrivingState.BEGIN;
+		boxCollectorState = BoxCollectorState.BEGIN;
 	}
 	
 	public void run() {
@@ -85,6 +87,7 @@ public class MoveLeftAuto implements AutoCode
 	@SuppressWarnings("static-access")
 	private void driveBegin() {
 		chassis.addAutoCommand(factory.command_GoForward(autoSwitchDistance));
+		drivingState = DrivingState.DRIVE_FORWARD;
 	}
 	
 	@SuppressWarnings("static-access")
@@ -95,6 +98,7 @@ public class MoveLeftAuto implements AutoCode
 			drivingState = DrivingState.MOVE_LEFT;
 			boxCollectorState = BoxCollectorState.RISING;
 			chassis.addAutoCommand(factory.command_MoveLeft(autoMoveLeftDistance));
+			drivingState = DrivingState.MOVE_LEFT;
 		}
 	}
 	
@@ -105,6 +109,7 @@ public class MoveLeftAuto implements AutoCode
 		if(chassis.isDone()) {
 			drivingState = DrivingState.STOP;
 			chassis.addAutoCommand(factory.command_Stop());
+			drivingState = DrivingState.STOP;
 		}
 	}
 	
@@ -196,5 +201,13 @@ public class MoveLeftAuto implements AutoCode
 			default:
 				return "NULL";
 		}
+	}
+
+	@Override
+	public void reset()
+	{
+		chassis.reset();
+		drivingState = DrivingState.BEGIN;
+		boxCollectorState = BoxCollectorState.BEGIN;
 	}
 }
