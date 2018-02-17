@@ -329,6 +329,7 @@ public class Robot extends IterativeRobot {
 		
 		SmartDashboard.putString("Box Lifter State", boxLifter.getStateString());
 		SmartDashboard.putString("Robot Lifter State", robotLift.getStateString());
+		SmartDashboard.putString("Auto State", autoCode.getStateString());
 	}
 	
 	@Override
