@@ -280,4 +280,8 @@ public class BoxCollector
 	public void stopBoxSucker() {
 		setMotorSpeed(0);
 	}
+	
+	public void reset() {
+		stateNow = State.BEGIN;
+	}
 }
