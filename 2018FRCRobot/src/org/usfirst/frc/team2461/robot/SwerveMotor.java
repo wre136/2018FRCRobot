@@ -23,7 +23,6 @@ public class SwerveMotor
 	private boolean isInverted = false;
 	private PIDController pidDrive;
 	private PIDController pidTurn;
-	private double setPointDrive = 0;
 	
 	private double kPDrive = 0.001;
 	private double kIDrive = 0;
@@ -337,25 +336,20 @@ public class SwerveMotor
 		{
 			pidTurn.enable();
 		}
-		
+
 		if(pidTurn.onTarget()) // If the wheels are pointing in the correct direction
 		{
 			if(!pidDrive.isEnabled()) { // Make sure the drive PID loop is enabled
 				pidDrive.enable();
 			}
-			
-			if(pidDrive.onTarget()) { // if the wheels haven't driven as far as they need too
-				if(encDrive.getStopped()) {
-					//pidDrive.reset();
-					//encDrive.reset();
-				}	
-			} else { // If the wheels have gone the specified distance, reset and disable the PID loops
-				//pidTurn.reset();
-				
+
+			if(pidDrive.onTarget()) { // if the wheels have driven as far as they need too
+				if(encDrive.getStopped()) { // If the wheels have come to a stop
+					return true; // Return that the driveAuto method is done
+				}
 			}
 		}
-		
-		return pidDrive.onTarget() && pidDrive.isEnabled();
+		return false; // Return false if the drive wheels have not gone far enough and/or have not stopped
 	}
 	
 	/**
@@ -640,6 +634,6 @@ public class SwerveMotor
 	}
 	
 	public boolean getDriveOntarget() {
-		return pidDrive.onTarget() && encDrive.getStopped();
+		return pidDrive.onTarget() && encDrive.getStopped() && pidDrive.isEnabled();
 	}
 }
