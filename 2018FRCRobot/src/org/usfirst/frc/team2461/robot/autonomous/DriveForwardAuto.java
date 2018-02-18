@@ -48,13 +48,13 @@ public class DriveForwardAuto implements AutoCode
 		chassis.driveAuto();
 		autoState = State.DRIVE_FORWARD;
 		autoStatePrevious = State.BEGIN;
-		futureTime = Robot.timer.get() + 3;
+		futureTime = Robot.timer.get() + 0.1;
 	}
 	
 	@SuppressWarnings("static-access")
 	private void driveForward() {
 		if(Robot.timer.get() > futureTime) { // Adding Delay to make sure autoCommand takes effect before checking
-			if(chassis.isDone()) {
+			if(!chassis.isDone()) {
 				autoState = State.STOP;
 				autoStatePrevious = State.DRIVE_FORWARD;
 				chassis.addAutoCommand(factory.command_Stop());
@@ -97,6 +97,7 @@ public class DriveForwardAuto implements AutoCode
 	
 	public void reset() {
 		chassis.reset();
+		chassis.clearAutoCommands();
 		autoState = State.BEGIN;
 	}
 }
