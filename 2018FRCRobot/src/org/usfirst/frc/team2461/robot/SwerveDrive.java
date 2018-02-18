@@ -309,5 +309,6 @@ public class SwerveDrive
 	
 	public void clearAutoCommands() {
 		autoCommands.clear();
+		currentCommand = null;
 	}
 }
