@@ -13,12 +13,14 @@ public class MoveRightAuto implements AutoCode
 	}
 	
 	private DrivingState drivingState;
+	private DrivingState drivingStatePrevious;
 	
 	private enum BoxCollectorState {
 		BEGIN, EXTENDING_ARMS, LOWERING, RISING, SPIITING_OUT, IDLE
 	}
 	
 	private BoxCollectorState boxCollectorState;
+	private BoxCollectorState boxCollectorStatePrevious;
 	
 	private SwerveDrive chassis;
 	private BoxCollector boxCollector;
@@ -88,6 +90,7 @@ public class MoveRightAuto implements AutoCode
 	private void driveBegin() {
 		chassis.addAutoCommand(factory.command_GoForward(autoSwitchDistance));
 		drivingState = DrivingState.DRIVE_FORWARD;
+		drivingStatePrevious = DrivingState.BEGIN;
 	}
 	
 	@SuppressWarnings("static-access")
@@ -95,10 +98,10 @@ public class MoveRightAuto implements AutoCode
 		chassis.driveAuto();
 
 		if(chassis.isDone()) {
-			drivingState = DrivingState.MOVE_RIGHT;
-			boxCollectorState = BoxCollectorState.RISING;
 			chassis.addAutoCommand(factory.command_MoveRight(autoMoveRightDistance));
 			drivingState = DrivingState.MOVE_RIGHT;
+			drivingStatePrevious = DrivingState.DRIVE_FORWARD;
+			boxCollectorState = BoxCollectorState.RISING;
 		}
 	}
 	
@@ -107,9 +110,9 @@ public class MoveRightAuto implements AutoCode
 		chassis.driveAuto();
 
 		if(chassis.isDone()) {
-			drivingState = DrivingState.STOP;
 			chassis.addAutoCommand(factory.command_Stop());
 			drivingState = DrivingState.STOP;
+			drivingStatePrevious = DrivingState.MOVE_RIGHT;
 		}
 	}
 	
@@ -121,6 +124,7 @@ public class MoveRightAuto implements AutoCode
 		boxCollector.armsExtend();
 		timeFuture = Robot.timer.get() + 0.5;
 		boxCollectorState = BoxCollectorState.EXTENDING_ARMS;
+		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
 	}
 	
 	private void boxExtendingArms() {
@@ -128,6 +132,7 @@ public class MoveRightAuto implements AutoCode
 		if(timeNow >= timeFuture) {
 			boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
+			boxCollectorStatePrevious = BoxCollectorState.EXTENDING_ARMS;
 		}
 	}
 	
@@ -135,6 +140,7 @@ public class MoveRightAuto implements AutoCode
 		if(boxLifter.getSwitchLow()) {
 			boxLifter.stop();
 			boxCollectorState = BoxCollectorState.IDLE;
+			boxCollectorStatePrevious = BoxCollectorState.LOWERING;
 		}
 	}
 	
@@ -146,6 +152,7 @@ public class MoveRightAuto implements AutoCode
 			boxCollector.spitBoxOut();
 			timeFuture = Robot.timer.get() + spitOutTime;
 			boxCollectorState = BoxCollectorState.SPIITING_OUT;
+			boxCollectorStatePrevious = BoxCollectorState.RISING;
 		}
 	}
 	
@@ -156,6 +163,7 @@ public class MoveRightAuto implements AutoCode
 			boxCollector.stopBoxSucker();
 			boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
+			boxCollectorStatePrevious = BoxCollectorState.SPIITING_OUT;
 		}
 	}
 	
@@ -167,6 +175,12 @@ public class MoveRightAuto implements AutoCode
 	public String getStateString()
 	{
 		return drivingStateToString() + " " + boxCollectorStateToString();
+	}
+	
+	@Override
+	public String getStatePreviousString()
+	{
+		return drivingStatePreviousToString() + " " + boxCollectorStatePreviousToString();
 	}
 	
 	private String drivingStateToString() {
@@ -184,8 +198,42 @@ public class MoveRightAuto implements AutoCode
 		}
 	}
 	
+	private String drivingStatePreviousToString() {
+		switch(drivingStatePrevious) {
+			case BEGIN:
+				return "Driving State: Begin";
+			case DRIVE_FORWARD:
+				return "Driving State: Driving Forward";
+			case MOVE_RIGHT:
+				return "Driving State: Moving Right";
+			case STOP:
+				return "Driving State: Stopped";
+			default:
+				return "NULL";
+		}
+	}
+	
 	private String boxCollectorStateToString() {
 		switch(boxCollectorState) {
+			case BEGIN:
+				return "Box Collector State: Begin";
+			case EXTENDING_ARMS:
+				return "Box Collector State: Extending Arms";
+			case IDLE:
+				return "Box Collector State: Idle";
+			case LOWERING:
+				return "Box Collector State: Lowering";
+			case RISING:
+				return "Box Collector State: Rising";
+			case SPIITING_OUT:
+				return "Box Collector State: Spitting Out";
+			default:
+				return "NULL";
+		}
+	}
+	
+	private String boxCollectorStatePreviousToString() {
+		switch(boxCollectorStatePrevious) {
 			case BEGIN:
 				return "Box Collector State: Begin";
 			case EXTENDING_ARMS:

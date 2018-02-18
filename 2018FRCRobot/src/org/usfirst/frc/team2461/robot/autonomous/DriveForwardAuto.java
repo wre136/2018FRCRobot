@@ -11,6 +11,7 @@ public class DriveForwardAuto implements AutoCode
 	}
 	
 	private State autoState;
+	private State autoStatePrevious;
 	private SwerveDrive chassis;
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	
@@ -46,7 +47,8 @@ public class DriveForwardAuto implements AutoCode
 		chassis.addAutoCommand(factory.command_GoForward(autoLineDistance));
 		chassis.driveAuto();
 		autoState = State.DRIVE_FORWARD;
-		futureTime = Robot.timer.get() + 0.1;
+		autoStatePrevious = State.BEGIN;
+		futureTime = Robot.timer.get() + 3;
 	}
 	
 	@SuppressWarnings("static-access")
@@ -54,6 +56,7 @@ public class DriveForwardAuto implements AutoCode
 		if(Robot.timer.get() > futureTime) { // Adding Delay to make sure autoCommand takes effect before checking
 			if(chassis.isDone()) {
 				autoState = State.STOP;
+				autoStatePrevious = State.DRIVE_FORWARD;
 				chassis.addAutoCommand(factory.command_Stop());
 			}
 		}
@@ -67,6 +70,20 @@ public class DriveForwardAuto implements AutoCode
 	public String getStateString()
 	{
 		switch(autoState) {
+			case BEGIN:
+				return "BEGIN";
+			case DRIVE_FORWARD:
+				return "DRIVING_FORWARD";
+			case STOP:
+				return "STOPPED";
+			default:
+				return "NULL";			
+		}
+	}
+	
+	public String getStatePreviousString()
+	{
+		switch(autoStatePrevious) {
 			case BEGIN:
 				return "BEGIN";
 			case DRIVE_FORWARD:

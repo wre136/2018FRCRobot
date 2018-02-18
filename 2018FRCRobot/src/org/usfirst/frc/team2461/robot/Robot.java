@@ -332,8 +332,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("Box Collector State", boxCollector.getStateString());
 		SmartDashboard.putString("Box Lifter State", boxLifter.getStateString());
 		SmartDashboard.putString("Robot Lifter State", robotLift.getStateString());
-		if(autoCode != null)
+		if(autoCode != null) {
 			SmartDashboard.putString("Auto State", autoCode.getStateString());
+			SmartDashboard.putString("Auto State Previous", autoCode.getStatePreviousString());
+		}
 		
 		LinkedList<SwerveDriveAutoCommand> list = chassis.getAutoCommandList();
 		int count = 0;
