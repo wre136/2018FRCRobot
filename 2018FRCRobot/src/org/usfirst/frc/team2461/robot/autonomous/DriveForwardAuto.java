@@ -68,11 +68,11 @@ public class DriveForwardAuto implements AutoCode
 	{
 		switch(autoState) {
 			case BEGIN:
-				return "Begin";
+				return "BEGIN";
 			case DRIVE_FORWARD:
-				return "Driving Forward";
+				return "DRIVING_FORWARD";
 			case STOP:
-				return "Stopped";
+				return "STOPPED";
 			default:
 				return "NULL";			
 		}
