@@ -633,6 +633,12 @@ public class SwerveMotor
 		return testState;
 	}
 	
+	/**
+	 * Returns whether the drive motor has gone the distance 
+	 * that it needs to, has stopped and if it is enabled.
+	 * @return True means the drive wheel is <b>enabled</b>, has gone the <b>distance it needs</b>
+	 * and is currently <b>stopped<b/>
+	 */
 	public boolean getDriveOntarget() {
 		return pidDrive.onTarget() && encDrive.getStopped() && pidDrive.isEnabled();
 	}
