@@ -207,6 +207,16 @@ public class SwerveDrive
 		return values;
 	}
 	
+	public double getDistanceAvg() {
+		double avg = 0;
+		for(int i = 0; i< 4; i++)
+		{
+			avg += motor[i].getDistance();
+		}
+		
+		return (avg/4);
+	}
+	
 	public double[] getDistanceSetpoints()
 	{
 		double[] values = {0,0,0,0};
