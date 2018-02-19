@@ -16,7 +16,7 @@ public class MoveLeftAuto implements AutoCode
 	private DrivingState drivingStatePrevious;
 	
 	private enum BoxCollectorState {
-		BEGIN, EXTENDING_ARMS, LOWERING, RISING, SPIITING_OUT, IDLE
+		BEGIN, EXTENDING_ARMS, LOWERING, RISING, SPIITING_OUT, IDLE, DONE
 	}
 	
 	private BoxCollectorState boxCollectorState;
@@ -31,6 +31,8 @@ public class MoveLeftAuto implements AutoCode
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	private double autoSwitchDistance = 60; //set to 60inches for testing purposes
 	private double autoMoveLeftDistance = 48;
+	private double autoStartRisingBoxDistance = 36;
+	private double autoStartSpittingBoxDistance = 58;
 	
 	private double spitOutTime = 2;
 	
@@ -80,6 +82,8 @@ public class MoveLeftAuto implements AutoCode
 			case SPIITING_OUT:
 				boxSpittingOut();
 				break;
+			case DONE:
+				break;
 			default:
 				break;
 			
@@ -88,21 +92,23 @@ public class MoveLeftAuto implements AutoCode
 	
 	@SuppressWarnings("static-access")
 	private void driveBegin() {
+		chassis.clearAutoCommands();
 		chassis.addAutoCommand(factory.command_GoForward(autoSwitchDistance));
+		chassis.driveAuto();
 		drivingState = DrivingState.DRIVE_FORWARD;
 		drivingStatePrevious = DrivingState.BEGIN;
+		timeFuture = Robot.timer.get() + 0.1;
 	}
 	
 	@SuppressWarnings("static-access")
 	private void driveDriveForward() {
-		chassis.driveAuto();
-
-		if(chassis.isDone()) {
-			drivingState = DrivingState.MOVE_LEFT;
-			boxCollectorState = BoxCollectorState.RISING;
-			chassis.addAutoCommand(factory.command_MoveLeft(autoMoveLeftDistance));
-			drivingState = DrivingState.MOVE_LEFT;
-			drivingStatePrevious = DrivingState.DRIVE_FORWARD;
+		if(Robot.timer.get() > timeFuture) { // Adding Delay to make sure autoCommand takes effect before checking
+			if(!chassis.isDone()) {
+				drivingState = DrivingState.MOVE_LEFT;
+				drivingStatePrevious = DrivingState.DRIVE_FORWARD;
+				chassis.addAutoCommand(factory.command_MoveLeft(autoMoveLeftDistance));
+				//chassis.driveAuto(); // Not sure if this will be needed
+			}
 		}
 	}
 	
@@ -133,27 +139,29 @@ public class MoveLeftAuto implements AutoCode
 		if(timeNow >= timeFuture) {
 			boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
-			boxCollectorState = BoxCollectorState.EXTENDING_ARMS;
+			boxCollectorStatePrevious = BoxCollectorState.EXTENDING_ARMS;
 		}
 	}
 	
 	private void boxLowering() {
 		if(boxLifter.getSwitchLow()) {
-			boxLifter.stop();
-			boxCollectorState = BoxCollectorState.IDLE;
-			boxCollectorState = BoxCollectorState.LOWERING;
+			if(boxCollectorStatePrevious == BoxCollectorState.SPIITING_OUT) {
+				boxCollector.stopBoxSucker();
+				boxCollectorState = BoxCollectorState.DONE;
+				boxCollectorStatePrevious = BoxCollectorState.LOWERING;
+			} else {
+				boxLifter.stop();
+				boxCollectorState = BoxCollectorState.IDLE;
+				boxCollectorStatePrevious = BoxCollectorState.LOWERING;
+			}
 		}
 	}
 	
 	private void boxRising() {
-		boxLifter.rise();
-		
 		if(boxLifter.getSwitchMiddle()) {
 			boxLifter.stop();
-			boxCollector.spitBoxOut();
-			timeFuture = Robot.timer.get() + spitOutTime;
-			boxCollectorState = BoxCollectorState.SPIITING_OUT;
-			boxCollectorState = BoxCollectorState.RISING;
+			boxCollectorState = BoxCollectorState.IDLE;
+			boxCollectorStatePrevious = BoxCollectorState.RISING;
 		}
 	}
 	
@@ -164,12 +172,23 @@ public class MoveLeftAuto implements AutoCode
 			boxCollector.stopBoxSucker();
 			boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
-			boxCollectorState = BoxCollectorState.SPIITING_OUT;
+			boxCollectorStatePrevious = BoxCollectorState.SPIITING_OUT;
 		}
 	}
 	
 	private void boxIdle() {
-		
+		if(chassis.getDistanceAvg() >= autoStartSpittingBoxDistance) {
+			boxCollector.spitBoxOut();
+			timeFuture = Robot.timer.get() + spitOutTime;
+			boxCollectorState = BoxCollectorState.SPIITING_OUT;
+			boxCollectorStatePrevious = BoxCollectorState.IDLE;
+		} else if(chassis.getDistanceAvg() >= autoStartRisingBoxDistance) {
+			if(!boxLifter.getSwitchMiddle()) {
+				boxLifter.rise();
+				boxCollectorState = BoxCollectorState.RISING;
+				boxCollectorStatePrevious = BoxCollectorState.IDLE;
+			}
+		}
 	}
 
 	@Override
