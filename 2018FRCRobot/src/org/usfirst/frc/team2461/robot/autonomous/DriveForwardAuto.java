@@ -16,7 +16,7 @@ public class DriveForwardAuto implements AutoCode
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	
 	private double autoLineDistance = 60; //set to 60inches for testing purposes
-	private double futureTime;
+	private double timeFuture;
 	
 	public DriveForwardAuto(SwerveDrive driveTrain)
 	{
@@ -57,7 +57,7 @@ public class DriveForwardAuto implements AutoCode
 		chassis.driveAuto();
 		autoState = State.DRIVE_FORWARD;
 		autoStatePrevious = State.BEGIN;
-		futureTime = Robot.timer.get() + 0.1;
+		timeFuture = Robot.timer.get() + 0.1;
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class DriveForwardAuto implements AutoCode
 	 */
 	@SuppressWarnings("static-access")
 	private void driveForward() {
-		if(Robot.timer.get() > futureTime) { // Adding Delay to make sure autoCommand takes effect before checking
+		if(Robot.timer.get() > timeFuture) { // Adding Delay to make sure autoCommand takes effect before checking
 			if(!chassis.isDone()) {
 				autoState = State.STOP;
 				autoStatePrevious = State.DRIVE_FORWARD;
