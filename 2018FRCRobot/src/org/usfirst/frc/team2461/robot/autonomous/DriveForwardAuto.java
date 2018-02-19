@@ -41,6 +41,15 @@ public class DriveForwardAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the BEGIN State of the Drive Forward Auto Code state machine.
+	 * <p>
+	 * It clears the drive trains list of autoCommands, adds a new command to 
+	 * drive forward the distance to the auto line, starts the wheel PID loops, 
+	 * moved the autoState to DRIVE_FORWARD, sets the previous state to BEGIN 
+	 * and lastly sets future time to the current time plus 0.1 seconds
+	 * </p>
+	 */
 	@SuppressWarnings("static-access")
 	private void begin() {
 		chassis.clearAutoCommands();
@@ -51,6 +60,15 @@ public class DriveForwardAuto implements AutoCode
 		futureTime = Robot.timer.get() + 0.1;
 	}
 	
+	/**
+	 * Method for the DRIVE_FORWARD State of the Drive Forward Auto Code state machine.
+	 * <p>
+	 * Once future time has passed, it will check to see if all wheels have traveled
+	 * the distance they needed to and have stopped. If they have, move the state 
+	 * to STOP, change previous state to DRIVE_FORWARD and add a new command to stop
+	 * to the drive train.
+	 * </p>
+	 */
 	@SuppressWarnings("static-access")
 	private void driveForward() {
 		if(Robot.timer.get() > futureTime) { // Adding Delay to make sure autoCommand takes effect before checking
@@ -62,10 +80,20 @@ public class DriveForwardAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the STOP State of the Drive Forward Auto Code state machine.
+	 * <p>
+	 * It will run the stop command and do nothing else
+	 * </p>
+	 */
 	private void stop() {
 		chassis.driveAuto();
 	}
 
+	/**
+	 * Returns the current state of the Drive Forward Auto Code State Machine as a String object
+	 * @return String object representing the Current state of the Drive Forward Auto Code
+	 */
 	@Override
 	public String getStateString()
 	{
@@ -81,6 +109,11 @@ public class DriveForwardAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Returns the previous state of the Drive Forward Auto Code State Machine as a String object
+	 * @return String object representing the Current state of the Drive Forward Auto Code
+	 */
+	@Override
 	public String getStatePreviousString()
 	{
 		switch(autoStatePrevious) {
@@ -95,6 +128,10 @@ public class DriveForwardAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Disables all PID Loops of the drive train, clears all autoCommands 
+	 * and sets the Drive Forward Auto Code state to BEGIN
+	 */
 	public void reset() {
 		chassis.reset();
 		chassis.clearAutoCommands();
