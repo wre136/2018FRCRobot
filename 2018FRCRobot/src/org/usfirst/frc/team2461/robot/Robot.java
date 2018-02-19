@@ -338,12 +338,13 @@ public class Robot extends IterativeRobot {
 		}
 		
 		LinkedList<SwerveDriveAutoCommand> list = chassis.getAutoCommandList();
-		int count = 0;
 		if(list != null) {
+			String autoCommandList = "";
 			for(SwerveDriveAutoCommand i: list) {
-				count++;
-				SmartDashboard.putString("AutoCommand " + count, i.SwerveDriveAutoCommandToString());
+				autoCommandList += i.toString() + "\n";
+				
 			}
+			SmartDashboard.putString("AutoCommands", autoCommandList);
 		}
 		
 		SmartDashboard.putBoolean("Chassis Done", chassis.isDone());
