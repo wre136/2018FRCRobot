@@ -318,14 +318,14 @@ public class BoxLifter
 	 * Lowers the box lifter by setting the motor to -1 
 	 */
 	public void lower() {
-		motorLifter.set(1);
+		motorLifter.set(-1);
 	}
 	
 	/**
 	 * Lifts the box lifter by setting the motor to 1
 	 */
 	public void rise() {
-		motorLifter.set(-1);
+		motorLifter.set(1);
 	}
 	
 	/**
