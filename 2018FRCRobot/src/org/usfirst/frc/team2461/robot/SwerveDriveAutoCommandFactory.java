@@ -3,7 +3,8 @@ package org.usfirst.frc.team2461.robot;
 /**
  * Class used to easily create SwerveDriveAutoCommands to be used for autonomous driving.
  * Can create commands for "Going Forward a distance", "Going Backward a distance",
- * "Turning Left a certain number of degrees" and "Turning Right a certain number of degrees"
+ * "Turning Left a certain number of degrees", "Turning Right a certain number of degrees",
+ * "Strafing Left a distance", and "Strafing Right a distance"
  * @author William R Edds FRC 2461 - The METAL-SKINs
  *
  */
@@ -27,6 +28,8 @@ public class SwerveDriveAutoCommandFactory
 	}
 	
 	/**
+	 * Method used to generate a SwerveDriveAutoCommand to go forward the
+	 * specified distance
 	 * @param distance Distance in inches
 	 * @return SwerveDriveAutoCommand Command to drive forward to be put into
 	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
@@ -39,6 +42,8 @@ public class SwerveDriveAutoCommandFactory
 	}
 	
 	/**
+	 * Method used to generate a SwerveDriveAutoCommand to go backward the
+	 * specified distance
 	 * @param distance Distance in inches
 	 * @return SwerveDriveAutoCommand Command to drive backward to be put into
 	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
@@ -51,6 +56,8 @@ public class SwerveDriveAutoCommandFactory
 	}
 	
 	/**
+	 * Method used to generate a SwerveDriveAutoCommand to turn left the
+	 * specified number of degrees
 	 * @param degree Number of degree to turn too. 0.0 to 359.99
 	 * @return SwerveDriveAutoCommand Command to "turn robot" to be put into
 	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
@@ -63,6 +70,8 @@ public class SwerveDriveAutoCommandFactory
 	}
 	
 	/**
+	 * Method used to generate a SwerveDriveAutoCommand to turn right the
+	 * specified number of degrees
 	 * @param degree Number of degree to turn too. 0.0 to 359.99
 	 * @return SwerveDriveAutoCommand Command to "turn robot" to be put into
 	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
@@ -75,6 +84,7 @@ public class SwerveDriveAutoCommandFactory
 	}
 	
 	/**
+	 * Method used to generate a SwerveDriveAutoCommand to stop all movement
 	 * @return SwerveDriveAutoCommand Command to "stop" to be put into
 	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
 	 * SwerveDrive addAutoCommand() method
@@ -85,11 +95,27 @@ public class SwerveDriveAutoCommandFactory
 		return new SwerveDriveAutoCommand("Stop", 0, direction) ;
 	}
 	
+	/**
+	 * Method used to generate a SwerveDriveAutoCommand to strife left the
+	 * specified distance
+	 * @param distance Distance in inches
+	 * @return SwerveDriveAutoCommand Command to "strife left" to be put into
+	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
+	 * SwerveDrive addAutoCommand() method
+	 */
 	public static SwerveDriveAutoCommand command_MoveLeft(double distance) {
 		double[] direction = {90,90,90,90};
 		return new SwerveDriveAutoCommand("Strafe Left", distance, direction) ;
 	}
 	
+	/**
+	 * Method used to generate a SwerveDriveAutoCommand to strife right the
+	 * specified distance
+	 * @param distance Distance in inches
+	 * @return SwerveDriveAutoCommand Command to "strife right" to be put into
+	 * SwerveDrive autoCommand Link List. Use this in conjunction with the 
+	 * SwerveDrive addAutoCommand() method
+	 */
 	public static SwerveDriveAutoCommand command_MoveRight(double distance) {
 		double[] direction = {270,270,270,270};
 		return new SwerveDriveAutoCommand("Strafe Right", distance, direction) ;
