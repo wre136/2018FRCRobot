@@ -31,8 +31,10 @@ public class SwerveDriveAutoCommand
 	{
 		return directionSetpoint;
 	}
-	
-	public String SwerveDriveAutoCommandToString() {
-		return distanceSetpoint + "";
+
+	@Override
+	public String toString()
+	{
+		return "SwerveDriveAutoCommand [commandName=" + commandName + "]";
 	}
 }
