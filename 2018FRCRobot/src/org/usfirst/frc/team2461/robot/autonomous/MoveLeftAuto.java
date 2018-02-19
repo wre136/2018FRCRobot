@@ -200,7 +200,7 @@ public class MoveLeftAuto implements AutoCode
 	}
 	
 	private String drivingStatePreviousToString() {
-		switch(drivingState) {
+		switch(drivingStatePrevious) {
 			case BEGIN:
 				return "Driving State: Begin";
 			case DRIVE_FORWARD:
@@ -234,7 +234,7 @@ public class MoveLeftAuto implements AutoCode
 	}
 	
 	private String boxCollectorStatePreviousToString() {
-		switch(boxCollectorState) {
+		switch(boxCollectorStatePrevious) {
 			case BEGIN:
 				return "Box Collector State: Begin";
 			case EXTENDING_ARMS:
