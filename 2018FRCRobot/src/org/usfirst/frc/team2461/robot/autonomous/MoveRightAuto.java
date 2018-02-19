@@ -255,6 +255,7 @@ public class MoveRightAuto implements AutoCode
 	public void reset()
 	{
 		chassis.reset();
+		chassis.clearAutoCommands();
 		drivingState = DrivingState.BEGIN;
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
