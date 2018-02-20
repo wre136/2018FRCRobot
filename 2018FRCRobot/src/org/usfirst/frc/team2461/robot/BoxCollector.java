@@ -15,15 +15,20 @@ public class BoxCollector
 {
 	private SpeedController motorIntakeLeft;
 	private SpeedController motorIntakeRight;
-	private SpeedController motorIntakeRear;
+	private SpeedController motorIntakeRear1;
+	private SpeedController motorIntakeRear2;
 	private DoubleSolenoid ramDeploy;
 	private MetalSkinsController player;
+	private BoxLifter boxLifter;
+	private double testTime;
+	private double timeNow;
 	
 	private enum State {
 		BEGIN, DEPLOYING, RETRACT, REST, SUCK_IN, SPIT_OUT
 	}
 	
 	private State stateNow;
+	private State statePrevious;
 	
 	/**
 	 * Creates a BoxCollector object.
@@ -33,12 +38,14 @@ public class BoxCollector
 	 * @param ramIn DoubleSolenoid that open-closes the arms
 	 * @param playerIn MetalSkinController to be used to activate the box collector
 	 */
-	public BoxCollector(SpeedController motorLeft, SpeedController motorRight, SpeedController motorRear, DoubleSolenoid ramIn, MetalSkinsController playerIn) {
+	public BoxCollector(SpeedController motorLeft, SpeedController motorRight, SpeedController motorRear1, SpeedController motorRear2, DoubleSolenoid ramIn, MetalSkinsController playerIn, BoxLifter boxLifterIn) {
 		motorIntakeLeft = motorLeft;
 		motorIntakeRight = motorRight;
-		motorIntakeRear = motorRear;
+		motorIntakeRear1 = motorRear1;
+		motorIntakeRear2 = motorRear2;
 		ramDeploy = ramIn;
 		player = playerIn;
+		boxLifter = boxLifterIn;
 		stateNow = State.BEGIN;
 	}
 	
@@ -75,6 +82,27 @@ public class BoxCollector
 		}
 	}
 	
+	public boolean runTest() {
+		switch(stateNow) {
+			case BEGIN:
+				beginTest();
+				return false;
+			case RETRACT:
+				return true;
+			case SUCK_IN:
+				suckInTest();
+				return false;
+			default:
+				return false;
+			
+		}
+	}
+	
+	public void initTest() {
+		stateNow = State.BEGIN;
+		armsExtend();
+	}
+	
 	/**
 	 * Method for the BEGIN State of the box collector state machine.
 	 * <p>
@@ -87,6 +115,14 @@ public class BoxCollector
 		armsExtend();
 		stopBoxSucker();
 		stateNow = State.REST;
+		statePrevious = State.BEGIN;
+	}
+	
+	private void beginTest() {
+		setMotorArms(-1);
+		stateNow = State.SUCK_IN;
+		statePrevious = State.BEGIN;
+		testTime = Robot.timer.get() + 2;
 	}
 	
 	/**
@@ -98,6 +134,7 @@ public class BoxCollector
 	private void deploying() {
 		armsExtend();
 		stateNow = State.REST;
+		statePrevious = State.DEPLOYING;
 	}
 	
 	/**
@@ -144,6 +181,25 @@ public class BoxCollector
 		} else {
 			stopBoxSucker();
 			stateNow = State.REST;
+			statePrevious = State.SUCK_IN;
+		}
+	}
+	
+	private void suckInTest() {
+		timeNow = Robot.timer.get();
+		
+		if(timeNow >= (testTime + 6)) {
+			setMotorRear(0);
+			armsRetract();
+			stateNow = State.RETRACT;
+			statePrevious = State.SUCK_IN;
+		} else if(timeNow >= (testTime + 4)) {
+			setMotorRear(1);
+		} else if(timeNow >= (testTime + 2)) {
+			setMotorArms(0);
+			setMotorRear(-1);
+		} else if(timeNow >= testTime) {
+			setMotorArms(1);
 		}
 	}
 	
@@ -163,6 +219,7 @@ public class BoxCollector
 		} else {
 			setMotorSpeed(0);
 			stateNow = State.REST;
+			statePrevious = State.SPIT_OUT;
 		}
 	}
 	
@@ -183,13 +240,28 @@ public class BoxCollector
 		} else {
 			armsExtend();
 			stateNow = State.REST;
+			statePrevious = State.RETRACT;
 		}
 	}
 	
 	private void setMotorSpeed(double speed) {
-		motorIntakeLeft.set(speed);
-		motorIntakeRight.set(-speed);
-		motorIntakeRear.set(speed);
+		setMotorArms(speed);
+		setMotorRear(speed);
+	}
+	
+	private void setMotorArms(double speed) {
+		if(boxLifter.getSwitchLow()) {
+			motorIntakeLeft.set(speed);
+			motorIntakeRight.set(-speed);
+		} else {
+			motorIntakeLeft.set(0);
+			motorIntakeRight.set(0);
+		}
+	}
+	
+	private void setMotorRear(double speed) {
+		motorIntakeRear1.set(speed);
+		motorIntakeRear2.set(-speed);
 	}
 	
 	public State getState() {
@@ -202,6 +274,25 @@ public class BoxCollector
 	 */
 	public String getStateString() {
 		switch(stateNow) {
+			case BEGIN:
+				return "BEGIN";
+			case DEPLOYING:
+				return "DEPLOYING";
+			case REST:
+				return "REST";
+			case RETRACT:
+				return "RETRACT";
+			case SPIT_OUT:
+				return "SPIT_OUT";
+			case SUCK_IN:
+				return "SUCK_IN";
+			default:
+				return "NULL";
+		}
+	}
+	
+	public String getStatePreviousString() {
+		switch(statePrevious) {
 			case BEGIN:
 				return "BEGIN";
 			case DEPLOYING:
@@ -283,5 +374,13 @@ public class BoxCollector
 	
 	public void reset() {
 		stateNow = State.BEGIN;
+	}
+	
+	public boolean getArmsExtended() {
+		if(ramDeploy.get() == DoubleSolenoid.Value.kReverse) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
