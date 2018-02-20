@@ -107,6 +107,25 @@ public class BoxLifter
 		}
 	}
 	
+	public boolean runTest() {
+		switch(stateNow) {
+			case BEGIN:
+				beginTest();
+				return false;
+			case LIFTING:
+				liftingTest();
+				return false;
+			case LOWERING:
+				loweringTest();
+				return false;
+			case MIDDLE:
+				return true;
+			default:
+				return false;
+			
+		}
+	}
+	
 	/**
 	 * Method for the BEGIN State of the box lifter state machine.
 	 * It stops the lifter motor and then sets the state to LOW, 
@@ -125,6 +144,23 @@ public class BoxLifter
 			stateNow = State.MIDDLE;
 		} else {
 			stateNow = State.IDLE;
+		}
+	}
+	
+	public void initTest() {
+		stateNow = State.BEGIN;
+	}
+	
+	private void beginTest() {
+		stop();
+		statePrevious = State.BEGIN;
+		
+		if(getSwitchLow()) {
+			rise();
+			stateNow = State.LIFTING;
+		} else {
+			lower();
+			stateNow = State.LOWERING;
 		}
 	}
 	
@@ -188,6 +224,20 @@ public class BoxLifter
 		}
 	}
 	
+	private void loweringTest() {
+		if(statePrevious == State.HIGH) {
+			if(getSwitchMiddle()) {
+				stop();
+				stateNow = State.MIDDLE;
+				statePrevious = State.LOWERING;
+			}
+		} else if(getSwitchLow()) {
+			rise();
+			stateNow = State.LIFTING;
+			statePrevious = State.LOW;
+		}
+	}
+	
 	/**
 	 * Method for the LIFTING state of the box lifter state machine.
 	 * This is the state where the lifter will be lifting.
@@ -227,8 +277,14 @@ public class BoxLifter
 				statePrevious = State.LIFTING;
 			}
 		}
-		
-		
+	}
+	
+	private void liftingTest() {
+		if(getSwitchHigh()) {
+			lower();
+			stateNow = State.LOWERING;
+			statePrevious = State.HIGH;
+		}
 	}
 	
 	/**
