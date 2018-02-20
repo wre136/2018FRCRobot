@@ -162,6 +162,9 @@ public class Robot extends IterativeRobot {
 		chassis.setDrivePIDValues(2, 0.1, 0.005, 0.001, 0);
 		chassis.setDrivePIDValues(3, 0.1, 0.005, 0.001, 0);
 		
+		c.setClosedLoopControl(true);
+		c.start();
+		
 		timer.start();
 	}
 
