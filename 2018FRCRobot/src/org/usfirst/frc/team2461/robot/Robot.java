@@ -66,16 +66,17 @@ public class Robot extends IterativeRobot {
 	
 	private int motor_L_Arm_int = 4;
 	private int motor_R_Arm_int = 5;
-	private int motor_Box_Grabber_int = 6;
+	private int motor_Box_Grabber_Rear1_int = 6;
+	private int motor_Box_Grabber_Rear2_int = 7;
 	private int[] armDoubleSolenoid = {0,1};
 	
-	private int motor_Box_Riser_int = 7;
+	private int motor_Box_Riser_int = 8;
 	private int switch_Riser_Low_int = 8;
 	private int switch_Riser_Mid_int = 9;
 	private int switch_Riser_High_int = 10;
 	
-	private int motor_Robot_Lifter_1_int = 8;
-	private int motor_Robot_Lifter_2_int = 9;
+	private int motor_Robot_Lifter_1_int = 9;
+	private int motor_Robot_Lifter_2_int = 10;
 	
 	
 	MetalSkinsController player1 = new MetalSkinsController(0, true);
@@ -111,18 +112,19 @@ public class Robot extends IterativeRobot {
 	
 	Compressor c = new Compressor(0);
 	
-	Spark boxMotorGrabberL = new Spark(motor_L_Arm_int);
-	Spark boxMotorGrabberR = new Spark(motor_R_Arm_int);
-	Spark boxMotorGrabber = new Spark(motor_Box_Grabber_int);
-	DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
-	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabber, armGrabber, player1);
-	
 	Spark riserMotor = new Spark(motor_Box_Riser_int);
 	DigitalInput riserSwitchLow = new DigitalInput(switch_Riser_Low_int);
 	DigitalInput riserSwitchMid = new DigitalInput(switch_Riser_Mid_int);
 	DigitalInput riserSwitchHigh = new DigitalInput(switch_Riser_High_int);
 	BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchMid, riserSwitchHigh, player1);
 	//BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchHigh, player1);
+	
+	Spark boxMotorGrabberL = new Spark(motor_L_Arm_int);
+	Spark boxMotorGrabberR = new Spark(motor_R_Arm_int);
+	Spark boxMotorGrabberRear1 = new Spark(motor_Box_Grabber_Rear1_int);
+	Spark boxMotorGrabberRear2 = new Spark(motor_Box_Grabber_Rear2_int);
+	DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
+	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber, player1, boxLifter);
 	
 	Talon lifterMotor1 = new Talon(motor_Robot_Lifter_1_int);
 	Talon lifterMotor2 = new Talon(motor_Robot_Lifter_2_int);
@@ -264,6 +266,8 @@ public class Robot extends IterativeRobot {
 		motorFR.initTest();
 		motorRL.initTest();
 		motorRR.initTest();
+		boxLifter.initTest();
+		boxCollector.initTest();
 	}
 
 
@@ -280,6 +284,10 @@ public class Robot extends IterativeRobot {
 		} else if(!motorRL.runTest()) {
 			
 		} else if(!motorRR.runTest()) {
+			
+		} else if(!boxLifter.runTest()) {
+			
+		} else if(!boxCollector.runTest()) {
 			
 		}
 	}
