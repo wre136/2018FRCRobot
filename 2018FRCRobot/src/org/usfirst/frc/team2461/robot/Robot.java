@@ -73,7 +73,7 @@ public class Robot extends IterativeRobot {
 	private int motor_Box_Riser_int = 8;
 	private int switch_Riser_Low_int = 8;
 	private int switch_Riser_Mid_int = 9;
-	private int switch_Riser_High_int = 10;
+	private int switch_Riser_High_int = 11;
 	
 	private int motor_Robot_Lifter_1_int = 9;
 	private int motor_Robot_Lifter_2_int = 10;
@@ -116,7 +116,7 @@ public class Robot extends IterativeRobot {
 	DigitalInput riserSwitchLow = new DigitalInput(switch_Riser_Low_int);
 	DigitalInput riserSwitchMid = new DigitalInput(switch_Riser_Mid_int);
 	DigitalInput riserSwitchHigh = new DigitalInput(switch_Riser_High_int);
-	BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchMid, riserSwitchHigh, player1);
+	BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchMid, riserSwitchHigh);
 	//BoxLifter boxLifter = new BoxLifter(riserMotor, riserSwitchLow, riserSwitchHigh, player1);
 	
 	Spark boxMotorGrabberL = new Spark(motor_L_Arm_int);
@@ -124,7 +124,9 @@ public class Robot extends IterativeRobot {
 	Spark boxMotorGrabberRear1 = new Spark(motor_Box_Grabber_Rear1_int);
 	Spark boxMotorGrabberRear2 = new Spark(motor_Box_Grabber_Rear2_int);
 	DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
-	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber, player1, boxLifter);
+	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber);
+	
+	BoxManager boxManager = new BoxManager(boxCollector, boxLifter, player1);
 	
 	Talon lifterMotor1 = new Talon(motor_Robot_Lifter_1_int);
 	Talon lifterMotor2 = new Talon(motor_Robot_Lifter_2_int);
@@ -255,8 +257,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		chassis.drive(player1);
-		boxCollector.run();
-		boxLifter.run();
+		boxManager.run();
 		robotLift.run();
 	}
 
@@ -266,8 +267,7 @@ public class Robot extends IterativeRobot {
 		motorFR.initTest();
 		motorRL.initTest();
 		motorRR.initTest();
-		boxLifter.initTest();
-		boxCollector.initTest();
+		boxManager.initTest();
 	}
 
 
@@ -285,9 +285,7 @@ public class Robot extends IterativeRobot {
 			
 		} else if(!motorRR.runTest()) {
 			
-		} else if(!boxLifter.runTest()) {
-			
-		} else if(!boxCollector.runTest()) {
+		} else if(!boxManager.runTest()) {
 			
 		}
 	}
@@ -340,8 +338,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("EncDriveCount", enc_FL_Drive.get());
 		SmartDashboard.putNumber("Encoder Distance", enc_FL_Drive.getDistance());
 		
-		SmartDashboard.putString("Box Collector State", boxCollector.getStateString());
-		SmartDashboard.putString("Box Lifter State", boxLifter.getStateString());
+		SmartDashboard.putString("Box Collector State", boxManager.getBoxCollectorStateString());
+		SmartDashboard.putString("Box Lifter State", boxManager.getBoxLifterStateString());
 		SmartDashboard.putString("Robot Lifter State", robotLift.getStateString());
 		if(autoCode != null) {
 			SmartDashboard.putString("Auto State", autoCode.getStateString());
@@ -369,8 +367,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic()
 	{
 		chassis.reset();
-		boxLifter.reset();
-		boxCollector.reset();
+		boxManager.reset();
 		robotLift.reset();
 		if(autoCode != null)
 			autoCode.reset();
