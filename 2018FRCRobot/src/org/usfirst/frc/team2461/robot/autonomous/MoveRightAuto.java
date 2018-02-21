@@ -1,7 +1,6 @@
 package org.usfirst.frc.team2461.robot.autonomous;
 
-import org.usfirst.frc.team2461.robot.BoxCollector;
-import org.usfirst.frc.team2461.robot.BoxLifter;
+import org.usfirst.frc.team2461.robot.BoxManager;
 import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
@@ -23,8 +22,7 @@ public class MoveRightAuto implements AutoCode
 	private BoxCollectorState boxCollectorStatePrevious;
 	
 	private SwerveDrive chassis;
-	private BoxCollector boxCollector;
-	private BoxLifter boxLifter;
+	private BoxManager boxManager;
 	private double timeFuture;
 	private double timeNow;
 	
@@ -34,10 +32,9 @@ public class MoveRightAuto implements AutoCode
 	
 	private double spitOutTime = 2;
 	
-	public MoveRightAuto(SwerveDrive chassisIn, BoxCollector boxCollectorIn, BoxLifter boxLifterIn) {
+	public MoveRightAuto(SwerveDrive chassisIn, BoxManager boxManagerIn) {
 		chassis = chassisIn;
-		boxCollector = boxCollectorIn;
-		boxLifter = boxLifterIn;
+		boxManager = boxManagerIn;
 		drivingState = DrivingState.BEGIN;
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
@@ -121,7 +118,7 @@ public class MoveRightAuto implements AutoCode
 	}
 	
 	private void boxBegin() {
-		boxCollector.armsExtend();
+		boxManager.boxCollector.armsExtend();
 		timeFuture = Robot.timer.get() + 0.5;
 		boxCollectorState = BoxCollectorState.EXTENDING_ARMS;
 		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
@@ -130,26 +127,26 @@ public class MoveRightAuto implements AutoCode
 	private void boxExtendingArms() {
 		timeNow = Robot.timer.get();
 		if(timeNow >= timeFuture) {
-			boxLifter.lower();
+			boxManager.boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
 			boxCollectorStatePrevious = BoxCollectorState.EXTENDING_ARMS;
 		}
 	}
 	
 	private void boxLowering() {
-		if(boxLifter.getSwitchLow()) {
-			boxLifter.stop();
+		if(boxManager.boxLifter.getSwitchLow()) {
+			boxManager.boxLifter.stop();
 			boxCollectorState = BoxCollectorState.IDLE;
 			boxCollectorStatePrevious = BoxCollectorState.LOWERING;
 		}
 	}
 	
 	private void boxRising() {
-		boxLifter.rise();
+		boxManager.boxLifter.rise();
 		
-		if(boxLifter.getSwitchMiddle()) {
-			boxLifter.stop();
-			boxCollector.spitBoxOut();
+		if(boxManager.boxLifter.getSwitchMiddle()) {
+			boxManager.boxLifter.stop();
+			boxManager.spitBoxOut();
 			timeFuture = Robot.timer.get() + spitOutTime;
 			boxCollectorState = BoxCollectorState.SPIITING_OUT;
 			boxCollectorStatePrevious = BoxCollectorState.RISING;
@@ -160,8 +157,8 @@ public class MoveRightAuto implements AutoCode
 		timeNow = Robot.timer.get();
 		
 		if(timeNow >= timeFuture) {
-			boxCollector.stopBoxSucker();
-			boxLifter.lower();
+			boxManager.stopBoxSucker();
+			boxManager.boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
 			boxCollectorStatePrevious = BoxCollectorState.SPIITING_OUT;
 		}
