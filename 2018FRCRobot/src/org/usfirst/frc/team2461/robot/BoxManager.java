@@ -29,12 +29,14 @@ public class BoxManager
 		RETRACTED, DEPLOYED
 	}
 	
-	BoxCollectorArmsState boxCollectorArmsStateNow;
-	BoxCollectorArmsState boxCollectorArmsStatePrevious;
+	BoxCollectorArmsState boxCollectorArmsState;
 	
 	public BoxManager(BoxCollector boxCollectorIn, BoxLifter boxLifterIn, MetalSkinsController playerIn) {
 		boxCollector = boxCollectorIn;
+		boxCollectorStateNow = BoxCollectorState.BEGIN;
+		
 		boxLifter = boxLifterIn;
+		boxLifterStateNow = BoxLifterState.BEGIN;
 		player = playerIn;
 	}
 	
@@ -153,8 +155,7 @@ public class BoxManager
 	 */
 	private void boxCollectorArmDeploy() {
 		boxCollector.armsExtend();
-		boxCollectorArmsStateNow = BoxCollectorArmsState.DEPLOYED;
-		boxCollectorArmsStatePrevious = BoxCollectorArmsState.RETRACTED;
+		boxCollectorArmsState = BoxCollectorArmsState.DEPLOYED;
 	}
 	
 	/**
@@ -165,8 +166,7 @@ public class BoxManager
 	 */
 	private void boxCollectorArmRetract() {
 		boxCollector.armsRetract();
-		boxCollectorArmsStateNow = BoxCollectorArmsState.RETRACTED;
-		boxCollectorArmsStatePrevious = BoxCollectorArmsState.DEPLOYED;
+		boxCollectorArmsState = BoxCollectorArmsState.RETRACTED;
 	}
 	
 	/**
@@ -224,9 +224,7 @@ public class BoxManager
 			boxCollectorStateNow = BoxCollectorState.REST;
 			boxCollectorStatePrevious = BoxCollectorState.SUCK_IN;
 			
-			boxCollector.armsRetract();
-			boxCollectorArmsStateNow = BoxCollectorArmsState.RETRACTED;
-			boxCollectorArmsStateNow = BoxCollectorArmsState.DEPLOYED;
+			boxCollectorArmRetract();
 			
 		} else if(timeNow >= (testTime + 4)) {
 			boxCollector.setRearMotorsSpitOut();
@@ -320,6 +318,7 @@ public class BoxManager
 	
 	private void boxLifterBeginTest() {
 		boxLifter.stop();
+		boxCollectorArmDeploy();
 		boxLifterStatePrevious = BoxLifterState.BEGIN;
 		
 		if(boxLifter.getSwitchLow()) {
@@ -596,5 +595,12 @@ public class BoxManager
 			default:
 				return "NULL";
 		}
+	}
+	
+	public void reset() {
+		boxCollectorStatePrevious = boxCollectorStateNow;
+		boxCollectorStateNow = BoxCollectorState.BEGIN;
+		boxLifterStatePrevious = boxLifterStateNow;
+		boxLifterStateNow = BoxLifterState.BEGIN;
 	}
 }
