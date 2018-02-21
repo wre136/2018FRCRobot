@@ -40,6 +40,14 @@ public class BoxManager
 		player = playerIn;
 	}
 	
+	/**
+	 * This is the method that runs the Box Collector and Box Lifter in Teleop.
+	 * 
+	 * <p>
+	 * Call this method in Teleop to run the above subsystems using
+	 * the State Machine mechanics and controller input.
+	 * </p>
+	 */
 	public void run()
 	{
 		switch(boxCollectorStateNow) {
@@ -86,6 +94,26 @@ public class BoxManager
 		}
 	}
 	
+	/**
+	 * Performs tests of Box Collector and Box Lifter subsystems.
+	 * <p>
+	 * The Box Collector will test in the following order:
+	 * <ol>
+	 * <li>Extend the arms</li>
+	 * <li>Run arm motors to suck in a box</li>
+	 * <li>Run arm motors to spit out a box</li>
+	 * <li>Stop arm motors and run rear motors to suck in a box</li>
+	 * <li>Run rear motors to spit out a box</li>
+	 * <li>Stop rear motors and retract arms</li>
+	 * 
+	 * The Box Lifter will test in the following order:
+	 * <ol>
+	 * <li>Lower Box Collector to low position if not already in low position</li>
+	 * <li>Raise Box Collector to high position</li>
+	 * <li>Lower Box Collector to middle position</li>
+	 * </p>
+	 * @return Returns whether the tests are finished. True means they are done.
+	 */
 	public boolean runTest() {
 		if(!runTestBoxCollector()) {
 			return false;
@@ -142,6 +170,7 @@ public class BoxManager
 	
 	private void boxCollectorBeginTest() {
 		boxCollector.setArmMotorsSuckIn();
+		boxCollector.armsExtend();
 		boxCollectorStateNow = BoxCollectorState.SUCK_IN;
 		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
 		testTime = Robot.timer.get() + 2;
@@ -219,18 +248,21 @@ public class BoxManager
 	private void boxCollectorSuckInTest() {
 		timeNow = Robot.timer.get();
 		
-		if(timeNow >= (testTime + 6)) {
+		if(timeNow >= (testTime + 8)) {
 			boxCollector.setRearMotorsStop();
 			boxCollectorStateNow = BoxCollectorState.REST;
 			boxCollectorStatePrevious = BoxCollectorState.SUCK_IN;
 			
 			boxCollectorArmRetract();
 			
-		} else if(timeNow >= (testTime + 4)) {
+		} else if(timeNow >= (testTime + 6)) {
 			boxCollector.setRearMotorsSpitOut();
+		} else if(timeNow >= (testTime + 4)) {
+			
+			boxCollector.setRearMotorsSuckIn();
 		} else if(timeNow >= (testTime + 2)) {
 			boxCollector.setArmMotorsStop();
-			boxCollector.setRearMotorsSuckIn();
+			
 		} else if(timeNow >= testTime) {
 			boxCollector.setArmMotorsSpitOut();
 		}
@@ -256,6 +288,15 @@ public class BoxManager
 		}
 	}
 	
+	/**
+	 * Method to spit a box out of the Box Collector.
+	 * <p>
+	 * If the low switch of the lifter is flipped, both 
+	 * the arm motors and rear motors will spit the box
+	 * out. Otherwise only the rear motors will spit 
+	 * the box out and the arm motors will remain off.
+	 * </p>
+	 */
 	public void spitBoxOut() {
 		if(boxLifter.getSwitchLow()) {
 			boxCollector.setArmMotorsSpitOut();
@@ -311,6 +352,10 @@ public class BoxManager
 		}
 	}
 	
+	/**
+	 * This method readys the Box Collector and Box Lifter subsystems for testing.
+	 * This <b>MUST</b> be ran before runTest()
+	 */
 	public void initTest() {
 		boxCollectorStateNow = BoxCollectorState.BEGIN;
 		boxLifterStateNow = BoxLifterState.BEGIN;
@@ -597,6 +642,10 @@ public class BoxManager
 		}
 	}
 	
+	/**
+	 * Resets the Box Collector and Box Lifter State Machines to their BEGIN
+	 * states.
+	 */
 	public void reset() {
 		boxCollectorStatePrevious = boxCollectorStateNow;
 		boxCollectorStateNow = BoxCollectorState.BEGIN;
