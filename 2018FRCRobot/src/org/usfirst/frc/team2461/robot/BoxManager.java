@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class BoxManager
 {
-	BoxCollector boxCollector;
-	BoxLifter boxLifter;
-	MetalSkinsController player;
+	public BoxCollector boxCollector;
+	public BoxLifter boxLifter;
+	private MetalSkinsController player;
 	private double testTime;
 	private double timeNow;
 	
@@ -182,7 +182,7 @@ public class BoxManager
 	 * It extends the arms so that the robot can grab boxes ahead of it.
 	 * </p>
 	 */
-	private void boxCollectorArmDeploy() {
+	public void boxCollectorArmDeploy() {
 		boxCollector.armsExtend();
 		boxCollectorArmsState = BoxCollectorArmsState.DEPLOYED;
 	}
@@ -193,7 +193,7 @@ public class BoxManager
 	 * It retracts the arms so that the arms are protected.
 	 * </p>
 	 */
-	private void boxCollectorArmRetract() {
+	public void boxCollectorArmRetract() {
 		boxCollector.armsRetract();
 		boxCollectorArmsState = BoxCollectorArmsState.RETRACTED;
 	}
