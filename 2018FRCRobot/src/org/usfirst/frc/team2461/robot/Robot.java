@@ -193,6 +193,8 @@ public class Robot extends IterativeRobot {
 		plateLayout = station.getGameSpecificMessage();
 		
 		switch(m_autoSelected) {
+			case kDefaultAuto:
+				autoCode = new DriveForwardAuto(chassis);
 			case LeftAuto:
 				if(plateLayout.charAt(0) == 'L') {
 					autoCode = new MoveRightAuto(chassis, boxCollector, boxLifter);
@@ -366,17 +368,17 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic()
 	{
-		chassis.reset();
-		boxManager.reset();
-		robotLift.reset();
-		if(autoCode != null)
-			autoCode.reset();
+		
 	}
 	
 	@Override
 	public void disabledInit()
 	{
-		
+		chassis.reset();
+		boxManager.reset();
+		robotLift.reset();
+		if(autoCode != null)
+			autoCode.reset();
 	}
 	
 	@Override
