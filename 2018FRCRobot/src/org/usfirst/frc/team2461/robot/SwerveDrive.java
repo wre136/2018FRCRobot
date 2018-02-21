@@ -196,6 +196,15 @@ public class SwerveDrive
 		return values;
 	}
 	
+	/**
+	 * Gets the distance each wheel has traveled and returns it as a 4-element array
+	 * @return 4-element double array <ol>
+	 * <li> [0] Front Left Wheel Distance</li>
+	 * <li> [1] Front Right Wheel Distance</li>
+	 * <li> [2] Rear Left Wheel Distance</li>
+	 * <li> [3] Rear Right Wheel Distance</li>
+	 * </ol>
+	 */
 	public double[] getDistance()
 	{
 		double[] values = {0,0,0,0};
@@ -207,6 +216,10 @@ public class SwerveDrive
 		return values;
 	}
 	
+	/**
+	 * Gets the average distance traveled by all the wheels
+	 * @return Double value that is the average of all the wheels
+	 */
 	public double getDistanceAvg() {
 		double avg = 0;
 		for(int i = 0; i< 4; i++)
@@ -217,6 +230,15 @@ public class SwerveDrive
 		return (avg/4);
 	}
 	
+	/**
+	 * Gets the distance setpoint for each wheel and returns it in a 4-elemnet array
+	 * @return 4-element double array <ol>
+	 * <li> [0] Front Left Wheel Distance Setpoint</li>
+	 * <li> [1] Front Right Wheel Distance Setpoint</li>
+	 * <li> [2] Rear Left Wheel Distance Setpoint</li>
+	 * <li> [3] Rear Right Wheel Distance Setpoint</li>
+	 * </ol>
+	 */
 	public double[] getDistanceSetpoints()
 	{
 		double[] values = {0,0,0,0};
