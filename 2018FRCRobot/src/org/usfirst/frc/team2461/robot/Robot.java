@@ -197,23 +197,23 @@ public class Robot extends IterativeRobot {
 				autoCode = new DriveForwardAuto(chassis);
 			case LeftAuto:
 				if(plateLayout.charAt(0) == 'L') {
-					autoCode = new MoveRightAuto(chassis, boxCollector, boxLifter);
+					autoCode = new MoveRightAuto(chassis, boxManager);
 				} else {
 					autoCode = new DriveForwardAuto(chassis);
 				}
 				break;
 			case CenterAuto:
 				if(plateLayout.charAt(0) == 'L') {
-					autoCode = new MoveLeftAuto(chassis, boxCollector, boxLifter);
+					autoCode = new MoveLeftAuto(chassis, boxManager);
 				} else if(plateLayout.charAt(0) == 'R') {
-					autoCode = new MoveRightAuto(chassis, boxCollector, boxLifter);
+					autoCode = new MoveRightAuto(chassis, boxManager);
 				} else {
 					autoCode = new DriveForwardAuto(chassis);
 				}
 				break;
 			case RightAuto:
 				if(plateLayout.charAt(0) == 'R') {
-					autoCode = new MoveLeftAuto(chassis, boxCollector, boxLifter);
+					autoCode = new MoveLeftAuto(chassis, boxManager);
 				} else {
 					autoCode = new DriveForwardAuto(chassis);
 				}
@@ -221,19 +221,6 @@ public class Robot extends IterativeRobot {
 			default:
 				break;
 		}
-		
-		System.out.println("Auto selected: " + m_autoSelected);
-		
-		//Adding commands to make robot go in a rectangle
-		/*chassis.addAutoCommand(factory.command_GoForward(60));
-		chassis.addAutoCommand(factory.command_TurnLeft(90));
-		chassis.addAutoCommand(factory.command_GoForward(90));
-		chassis.addAutoCommand(factory.command_TurnLeft(90));
-		chassis.addAutoCommand(factory.command_GoForward(60));
-		chassis.addAutoCommand(factory.command_TurnLeft(90));
-		chassis.addAutoCommand(factory.command_GoForward(0));
-		chassis.addAutoCommand(factory.command_TurnLeft(90));
-		chassis.addAutoCommand(factory.command_Stop());*/
 	}
 
 	/**
@@ -337,9 +324,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData(chassis.getDrivePID(2));
 		SmartDashboard.putData(chassis.getDrivePID(3));
 		
-		SmartDashboard.putNumber("EncDriveCount", enc_FL_Drive.get());
-		SmartDashboard.putNumber("Encoder Distance", enc_FL_Drive.getDistance());
-		
 		SmartDashboard.putString("Box Collector State", boxManager.getBoxCollectorStateString());
 		SmartDashboard.putString("Box Lifter State", boxManager.getBoxLifterStateString());
 		SmartDashboard.putString("Robot Lifter State", robotLift.getStateString());
@@ -381,9 +365,11 @@ public class Robot extends IterativeRobot {
 			autoCode.reset();
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public void robotPeriodic()
 	{
-		printDataToScreen();
+		if(true)
+			printDataToScreen();
 	}
 }
