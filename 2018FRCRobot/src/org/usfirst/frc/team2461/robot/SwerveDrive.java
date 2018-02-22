@@ -3,7 +3,6 @@ package org.usfirst.frc.team2461.robot;
 import java.util.LinkedList;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * <h1> Swerve Drive Class </h1>
