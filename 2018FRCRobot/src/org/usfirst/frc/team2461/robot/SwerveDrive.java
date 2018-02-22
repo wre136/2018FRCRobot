@@ -15,12 +15,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwerveDrive
 {
 	/**
-	 * motor[0] = FrontLeft,
-	 *   motor[1] = FrontRight,
-	 *   motor[2] = RearLeft,
-	 *   motor[3] = RearRight
+	 * <ul>
+	 * <li>motor[0] = Front Left</li>
+	 *  <li> motor[1] = Front Right</li>
+	 *  <li> motor[2] = Rear Left</li>
+	 *   <li>motor[3] = Rear Right</li>
+	 *   </ul>
 	 */
 	private SwerveMotor motor[] = new SwerveMotor[4];
+	
+	/**
+	 * Power factor to scale the drive motors by.
+	 * <p>Scale from 0.0 (no power at all) to 1.0 (full power!)</p>
+	 */
 	private double POWER_FACTOR = 0.5;
 	
 	/**
@@ -105,8 +112,6 @@ public class SwerveDrive
 	        ws[i] /= maxWheelSpeed;
 	      }
 	    }
-	    
-	    SmartDashboard.putNumber("Calculated Angle to turn", wa[0]);
 	    
 	    for (int i = 0; i < motor.length; i++) {
 	        motor[i].drive(wa[i], ws[i]*POWER_FACTOR);
