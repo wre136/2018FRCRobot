@@ -95,7 +95,7 @@ public class RobotLift
 		} else if(player.getYButton()) {
 			liftRobot();
 			stateNow = State.LIFTING;
-		} else if(player.getXButton()) {
+		} else if(player.getXButton() && player.getBackButton()) {
 			lowerRobot();
 			stateNow = State.LOWERING;
 		}
