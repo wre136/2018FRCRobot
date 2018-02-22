@@ -6,8 +6,11 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
+ * <h1> Swerve Drive Class </h1>
  * @author William R Edds FRC 2461 - The METAL-SKINs
- *
+ * <p>
+ * 2018 season SwerveDrive drive train that is used to control the 4 SwerveMotors.
+ * </p>
  */
 public class SwerveDrive
 {
@@ -43,8 +46,12 @@ public class SwerveDrive
 	}
 	
 	/**
-	 * 
-	 * @param motorIn
+	 * Creates Swerve Drive Object using 4-element SwerveMotor array
+	 * @param motorIn 4-element SwerveMotor array <ol>
+	 * <li>0 - Front Left SwerveMotor</li>
+	 * <li>1 - Front Right SwerveMotor</li>
+	 * <li>2 - Rear Left SwerveMotor</li>
+	 * <li>3 - Rear Right SwerveMotor</li>
 	 */
 	public SwerveDrive(SwerveMotor[] motorIn)
 	{
@@ -52,7 +59,8 @@ public class SwerveDrive
 	}
 	
 	/**
-	 * Used to drive the robot during TeleOp mode. Code initial credit from https://github.com/strykeforce/thirdcoast
+	 * Used to drive the robot during TeleOp mode.
+	 * <p>Initial code credit goes to <a href="https://github.com/strykeforce/thirdcoast">https://github.com/strykeforce/thirdcoast</a></p>
 	 * @param player MetalSkinsController used to drive robot
 	 */
 	public void drive(MetalSkinsController player)
@@ -162,6 +170,15 @@ public class SwerveDrive
 		}
 	}
 	
+	/**
+	 * Gets the current turn angle for each wheel
+	 * @return 4-element double array in the range of 0 to 359.99 <ol>
+	 * <li>0 - Front Left Wheel Turn Angle</li>
+	 * <li>1 - Front Right Wheel Turn Angle</li>
+	 * <li>2 - Rear Left Wheel Turn Angle</li>
+	 * <li>3 - Rear Right Wheel Turn Angle</li>
+	 * </ol>
+	 */
 	public double[] getTurnEncoderAngles()
 	{
 		double[] angles = {0,0,0,0};
@@ -173,6 +190,15 @@ public class SwerveDrive
 		return angles;
 	}
 	
+	/**
+	 * Gets the current turn angle setpoint for each wheel
+	 * @return 4-element double array in the range of 0 to 359.99 <ol>
+	 * <li>0 - Front Left Wheel Turn Angle Setpoint</li>
+	 * <li>1 - Front Right Wheel Turn Angle Setpoint</li>
+	 * <li>2 - Rear Left Wheel Turn Angle Setpoint</li>
+	 * <li>3 - Rear Right Wheel Turn Angle Setpoint</li>
+	 * </ol>
+	 */
 	public double[] getTurnEncoderSetpoints()
 	{
 		double[] angles = {0,0,0,0};
