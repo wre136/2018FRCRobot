@@ -185,6 +185,16 @@ public class SwerveDrive
 		return angles;
 	}
 	
+	/**
+	 * Gets the difference from the turn angle the wheels
+	 * are suppose to be at and what angle they currently
+	 * are at
+	 * @return 4-element double array <ol>
+	 * <li>0 - Front Left Wheel Turn Error</li>
+	 * <li>1 - Front Right Wheel Turn Error</li>
+	 * <li>2 - Rear Left Wheel Turn Error</li>
+	 * <li>3 - Rear Right Wheel Turn Error</li>
+	 */
 	public double[] getPIDTurnErrors()
 	{
 		double[] values = {0,0,0,0};
@@ -250,6 +260,16 @@ public class SwerveDrive
 		return values;
 	}
 	
+	/**
+	 * Gets the current speed of each wheel in inches per second
+	 * @return 4-element double array representing inches per second
+	 * <ol>
+	 * <li> [0] Front Left Wheel Speed</li>
+	 * <li> [1] Front Right Wheel Speed</li>
+	 * <li> [2] Rear Left Wheel Speed</li>
+	 * <li> [3] Rear Right Wheel Speed</li>
+	 * </ol>
+	 */
 	public double[] getDriveSpeed()
 	{
 		double[] values = {0,0,0,0};
@@ -272,6 +292,10 @@ public class SwerveDrive
 		return values;
 	}
 	
+	/**
+	 * Resets distance traveled by the drive train to zero and disables the
+	 * driving and turning PID loops
+	 */
 	public void reset() {
 		for(int i = 0; i < 4; i++)
 		{
@@ -280,6 +304,13 @@ public class SwerveDrive
 		}
 	}
 	
+	/**
+	 * Gets the current loaded command that is driving the wheels
+	 * @return 2-element double array <ol>
+	 * <li>0 - Direction of just the first wheel</li>
+	 * <li>1 - Distance the wheels are to travel</li>
+	 * </ol>
+	 */
 	public double[] getCurrentCommand()
 	{
 		double value[] = {0, 0};
@@ -293,11 +324,34 @@ public class SwerveDrive
 		return value;
 	}
 	
+	/**
+	 * Method used to set the P, I, D, and F coefficients of the DRIVE PID loop
+	 * @param motorNum Number of motor to set values to: <ul>
+	 * <li>0 - Front Left Wheel</li>
+	 * <li>1 - Front Right Wheel</li>
+	 * <li>2 - Rear Left Wheel</li>
+	 * <li>3 - Rear Right Wheel</li>
+	 * @param P Proportial coefficient value
+	 * @param I Integral coefficient value
+	 * @param D Differential coefficient value
+	 * @param F Feed Forward coefficient value
+	 */
 	public void setDrivePIDValues(int motorNum, double P, double I, double D, double F)
 	{
 		motor[motorNum].setDrivePIDValues(P, I, D, F);
 	}
 	
+	/**
+	 * Method used to set the P, I, and D coefficients of the TURN PID loop
+	 * @param motorNum Number of motor to set values to: <ul>
+	 * <li>0 - Front Left Wheel</li>
+	 * <li>1 - Front Right Wheel</li>
+	 * <li>2 - Rear Left Wheel</li>
+	 * <li>3 - Rear Right Wheel</li>
+	 * @param P Proportial coefficient value
+	 * @param I Integral coefficient value
+	 * @param D Differential coefficient value
+	 */
 	public void setTurnPIDValues(int motorNum, double P, double I, double D)
 	{
 		motor[motorNum].setTurnPIDValues(P, I, D);
@@ -313,18 +367,31 @@ public class SwerveDrive
 		return motor[motorNumber].getDrivePID();
 	}
 	
+	/**
+	 * Sets the distance each wheel is to travel
+	 * @param distanceToTravel Distance in inches
+	 */
 	public void setDistanceSetpoint(double distanceToTravel) {
 		for(int i = 0; i < 4; i++) {
 			motor[i].setDistanceSetPoint(distanceToTravel);
 		}
 	}
 	
+	/**
+	 * Sets the direction each wheel is to turn to
+	 * @param direction Direction in degrees between 0 and 359.99
+	 */
 	public void setDirectionSetpoint(double direction) {
 		for(int i = 0; i < 4; i++) {
 			motor[i].setDirectionSetPoint(direction);
 		}
 	}
 	
+	/**
+	 * Loads a swerveDriveAutoCommand and uses it to set the
+	 * direction and distance of each wheel
+	 * @param command SweverDriveAutoCommand
+	 */
 	private void loadAutoCommand(SwerveDriveAutoCommand command) {
 		for(int i = 0; i < 4; i++)
 		{
@@ -339,6 +406,10 @@ public class SwerveDrive
 		return autoCommands;
 	}
 	
+	/**
+	 * Method to clear all SwerveDriveAutoCommands from the autoCommand list
+	 * and removes the currently loaded autoCommand
+	 */
 	public void clearAutoCommands() {
 		autoCommands.clear();
 		currentCommand = null;
