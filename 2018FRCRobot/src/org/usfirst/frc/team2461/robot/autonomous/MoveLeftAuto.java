@@ -254,6 +254,8 @@ public class MoveLeftAuto implements AutoCode
 				return "Driving State: Moving Left";
 			case STOP:
 				return "Driving State: Stopped";
+			case DRIVE_BACK:
+				return "Driving State: Driving Back";
 			default:
 				return "NULL";
 		}
@@ -269,6 +271,8 @@ public class MoveLeftAuto implements AutoCode
 				return "Driving State: Moving Left";
 			case STOP:
 				return "Driving State: Stopped";
+			case DRIVE_BACK:
+				return "Driving State: Driving Back";
 			default:
 				return "NULL";
 		}
@@ -288,6 +292,8 @@ public class MoveLeftAuto implements AutoCode
 				return "Box Collector State: Rising";
 			case SPIITING_OUT:
 				return "Box Collector State: Spitting Out";
+			case DONE:
+				return "BoxCollector State: Done";
 			default:
 				return "NULL";
 		}
@@ -307,6 +313,8 @@ public class MoveLeftAuto implements AutoCode
 				return "Box Collector State: Rising";
 			case SPIITING_OUT:
 				return "Box Collector State: Spitting Out";
+			case DONE:
+				return "BoxCollector State: Done";
 			default:
 				return "NULL";
 		}
@@ -320,6 +328,4 @@ public class MoveLeftAuto implements AutoCode
 		drivingState = DrivingState.BEGIN;
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
-
-	
 }

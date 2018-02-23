@@ -8,14 +8,14 @@ import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
 public class MoveRightAuto implements AutoCode
 {
 	private enum DrivingState {
-		BEGIN, DRIVE_FORWARD, MOVE_RIGHT, STOP
+		BEGIN, DRIVE_FORWARD, MOVE_RIGHT, STOP, DRIVE_BACK
 	}
 	
 	private DrivingState drivingState;
 	private DrivingState drivingStatePrevious;
 	
 	private enum BoxCollectorState {
-		BEGIN, EXTENDING_ARMS, LOWERING, RISING, SPIITING_OUT, IDLE
+		BEGIN, EXTENDING_ARMS, LOWERING, RISING, SPIITING_OUT, IDLE, DONE
 	}
 	
 	private BoxCollectorState boxCollectorState;
@@ -23,18 +23,25 @@ public class MoveRightAuto implements AutoCode
 	
 	private SwerveDrive chassis;
 	private BoxManager boxManager;
-	private double timeFuture;
-	private double timeNow;
+	
+	//Time Management Elements
+	private double timeDriveFuture;
+	private double timeDriveNow;
+	private double timeBoxManagerFuture;
+	private double timeBoxManagerNow;
 	
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
-	private double autoSwitchDistance = 60; //set to 60inches for testing purposes
-	private double autoMoveRightDistance = 48;
+	private double autoSwitchDistance = 120; //set to 60inches for testing purposes
+	private double autoMoveLeftDistance = 48;
+	private double autoDriveBackDistance = 10;
+	private double autoStartRisingBoxDistance = 100;
+	private double autoStartSpittingBoxDistance = 120;
 	
-	private double spitOutTime = 2;
+	private double spitOutTime = 3;
 	
-	public MoveRightAuto(SwerveDrive chassisIn, BoxManager boxManagerIn) {
+	public MoveRightAuto(SwerveDrive chassisIn, BoxManager boxMaangerIn) {
 		chassis = chassisIn;
-		boxManager = boxManagerIn;
+		boxManager = boxMaangerIn;
 		drivingState = DrivingState.BEGIN;
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
@@ -52,6 +59,9 @@ public class MoveRightAuto implements AutoCode
 				break;
 			case STOP:
 				driveStop();
+				break;
+			case DRIVE_BACK:
+				driveDriveBack();
 				break;
 			default:
 				break;
@@ -77,6 +87,8 @@ public class MoveRightAuto implements AutoCode
 			case SPIITING_OUT:
 				boxSpittingOut();
 				break;
+			case DONE:
+				break;
 			default:
 				break;
 			
@@ -85,31 +97,60 @@ public class MoveRightAuto implements AutoCode
 	
 	@SuppressWarnings("static-access")
 	private void driveBegin() {
+		chassis.clearAutoCommands();
 		chassis.addAutoCommand(factory.command_GoForward(autoSwitchDistance));
+		chassis.driveAuto();
 		drivingState = DrivingState.DRIVE_FORWARD;
 		drivingStatePrevious = DrivingState.BEGIN;
+		timeDriveFuture = Robot.timer.get() + 0.1;
 	}
 	
 	@SuppressWarnings("static-access")
 	private void driveDriveForward() {
-		chassis.driveAuto();
+		timeDriveNow = Robot.timer.get();
+		if(timeDriveNow > timeDriveFuture) { // Adding Delay to make sure autoCommand takes effect before checking
+			if(!chassis.isDone()) {
+				drivingState = DrivingState.MOVE_RIGHT;
+				drivingStatePrevious = DrivingState.DRIVE_FORWARD;
+				chassis.reset();
+				chassis.addAutoCommand(factory.command_MoveRight(autoMoveLeftDistance));
+				chassis.driveAuto(); // Not sure if this will be needed
+				timeDriveFuture = Robot.timer.get() + 0.1;
+			}
+		}
+	}
 
-		if(chassis.isDone()) {
-			chassis.addAutoCommand(factory.command_MoveRight(autoMoveRightDistance));
-			drivingState = DrivingState.MOVE_RIGHT;
-			drivingStatePrevious = DrivingState.DRIVE_FORWARD;
-			boxCollectorState = BoxCollectorState.RISING;
+	@SuppressWarnings("static-access")
+	private void driveMoveRight() {
+		timeDriveNow = Robot.timer.get();
+		if(timeDriveNow > timeDriveFuture) {
+			if(!chassis.isDone()) {
+				drivingState = DrivingState.STOP;
+				drivingStatePrevious = DrivingState.MOVE_RIGHT;
+				chassis.reset();
+				chassis.addAutoCommand(factory.command_Stop());
+				chassis.driveAuto();
+			}
 		}
 	}
 	
 	@SuppressWarnings("static-access")
-	private void driveMoveRight() {
-		chassis.driveAuto();
-
-		if(chassis.isDone()) {
-			chassis.addAutoCommand(factory.command_Stop());
-			drivingState = DrivingState.STOP;
-			drivingStatePrevious = DrivingState.MOVE_RIGHT;
+	private void driveDriveBack() {
+		timeDriveNow = Robot.timer.get();
+		if(timeDriveNow > timeDriveFuture) {
+			if(!chassis.isDone()) {
+				drivingState = DrivingState.STOP;
+				drivingStatePrevious = DrivingState.DRIVE_BACK;
+				chassis.reset();
+				chassis.addAutoCommand(factory.command_Stop());
+				chassis.driveAuto();
+				
+				//Once the robot has driven back, extend arms and lower the Box Lifter
+				boxManager.boxCollector.armsExtend();
+				boxManager.boxLifter.lower();
+				boxCollectorState = BoxCollectorState.LOWERING;
+				boxCollectorStatePrevious = BoxCollectorState.DONE;
+			}
 		}
 	}
 	
@@ -119,14 +160,14 @@ public class MoveRightAuto implements AutoCode
 	
 	private void boxBegin() {
 		boxManager.boxCollector.armsExtend();
-		timeFuture = Robot.timer.get() + 0.5;
+		timeBoxManagerFuture = Robot.timer.get() + 0.5;
 		boxCollectorState = BoxCollectorState.EXTENDING_ARMS;
 		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
 	}
 	
 	private void boxExtendingArms() {
-		timeNow = Robot.timer.get();
-		if(timeNow >= timeFuture) {
+		timeBoxManagerNow = Robot.timer.get();
+		if(timeBoxManagerNow >= timeBoxManagerFuture) {
 			boxManager.boxLifter.lower();
 			boxCollectorState = BoxCollectorState.LOWERING;
 			boxCollectorStatePrevious = BoxCollectorState.EXTENDING_ARMS;
@@ -135,37 +176,60 @@ public class MoveRightAuto implements AutoCode
 	
 	private void boxLowering() {
 		if(boxManager.boxLifter.getSwitchLow()) {
-			boxManager.boxLifter.stop();
-			boxCollectorState = BoxCollectorState.IDLE;
-			boxCollectorStatePrevious = BoxCollectorState.LOWERING;
+			if(boxCollectorStatePrevious == BoxCollectorState.DONE) {
+				boxManager.boxLifter.stop();
+				boxCollectorState = BoxCollectorState.DONE;
+				boxCollectorStatePrevious = BoxCollectorState.LOWERING;
+			} else {
+				boxManager.boxLifter.stop();
+				boxCollectorState = BoxCollectorState.IDLE;
+				boxCollectorStatePrevious = BoxCollectorState.LOWERING;
+			}
 		}
 	}
 	
 	private void boxRising() {
-		boxManager.boxLifter.rise();
-		
-		if(boxManager.boxLifter.getSwitchMiddle()) {
+		if(boxManager.boxLifter.getSwitchMiddle()) { // Once we reach the middle switch
 			boxManager.boxLifter.stop();
-			boxManager.spitBoxOut();
-			timeFuture = Robot.timer.get() + spitOutTime;
-			boxCollectorState = BoxCollectorState.SPIITING_OUT;
+			boxManager.boxCollector.armsRetract();
+			boxCollectorState = BoxCollectorState.IDLE;
 			boxCollectorStatePrevious = BoxCollectorState.RISING;
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	private void boxSpittingOut() {
-		timeNow = Robot.timer.get();
-		
-		if(timeNow >= timeFuture) {
+		timeBoxManagerNow = Robot.timer.get();
+		if(timeBoxManagerNow >= timeBoxManagerFuture) {
 			boxManager.stopBoxSucker();
-			boxManager.boxLifter.lower();
-			boxCollectorState = BoxCollectorState.LOWERING;
+			//boxManager.boxLifter.lower(); //Not lowering Box Collector to protect the arms
+			//boxCollectorState = BoxCollectorState.LOWERING;
+			boxCollectorState = BoxCollectorState.DONE;
 			boxCollectorStatePrevious = BoxCollectorState.SPIITING_OUT;
+			
+			//Once spitting out is done, drive robot back 10 inches
+			drivingState = DrivingState.DRIVE_BACK;
+			drivingStatePrevious = DrivingState.STOP;
+			chassis.reset();
+			chassis.addAutoCommand(factory.command_GoBackward(autoDriveBackDistance));
+			chassis.driveAuto();
+			timeDriveFuture = Robot.timer.get() + 0.1;
 		}
 	}
 	
 	private void boxIdle() {
-		
+		if(chassis.getDistanceAvg() >= autoStartSpittingBoxDistance) {
+			boxManager.spitBoxOut();
+			timeBoxManagerFuture = Robot.timer.get() + spitOutTime;
+			boxCollectorState = BoxCollectorState.SPIITING_OUT;
+			boxCollectorStatePrevious = BoxCollectorState.IDLE;
+		} else if(chassis.getDistanceAvg() >= autoStartRisingBoxDistance) {
+			if(!boxManager.boxLifter.getSwitchMiddle()) { //If we haven't reached the middle switch let
+				boxManager.boxLifter.rise();
+				boxCollectorState = BoxCollectorState.RISING;
+				boxCollectorStatePrevious = BoxCollectorState.IDLE;
+			}
+		}
 	}
 
 	@Override
@@ -187,9 +251,11 @@ public class MoveRightAuto implements AutoCode
 			case DRIVE_FORWARD:
 				return "Driving State: Driving Forward";
 			case MOVE_RIGHT:
-				return "Driving State: Moving Right";
+				return "Driving State: Moving RIGHT";
 			case STOP:
 				return "Driving State: Stopped";
+			case DRIVE_BACK:
+				return "Driving State: Driving Back";
 			default:
 				return "NULL";
 		}
@@ -202,9 +268,11 @@ public class MoveRightAuto implements AutoCode
 			case DRIVE_FORWARD:
 				return "Driving State: Driving Forward";
 			case MOVE_RIGHT:
-				return "Driving State: Moving Right";
+				return "Driving State: Moving Left";
 			case STOP:
 				return "Driving State: Stopped";
+			case DRIVE_BACK:
+				return "Driving State: Driving Back";
 			default:
 				return "NULL";
 		}
@@ -224,6 +292,8 @@ public class MoveRightAuto implements AutoCode
 				return "Box Collector State: Rising";
 			case SPIITING_OUT:
 				return "Box Collector State: Spitting Out";
+			case DONE:
+				return "BoxCollector State: Done";
 			default:
 				return "NULL";
 		}
@@ -243,6 +313,8 @@ public class MoveRightAuto implements AutoCode
 				return "Box Collector State: Rising";
 			case SPIITING_OUT:
 				return "Box Collector State: Spitting Out";
+			case DONE:
+				return "BoxCollector State: Done";
 			default:
 				return "NULL";
 		}
