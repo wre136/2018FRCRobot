@@ -27,12 +27,12 @@ public class MoveLeftAuto implements AutoCode
 	private double timeNow;
 	
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
-	private double autoSwitchDistance = 60; //set to 60inches for testing purposes
+	private double autoSwitchDistance = 120; //set to 60inches for testing purposes
 	private double autoMoveLeftDistance = 48;
-	private double autoStartRisingBoxDistance = 36;
-	private double autoStartSpittingBoxDistance = 58;
+	private double autoStartRisingBoxDistance = 100;
+	private double autoStartSpittingBoxDistance = 120;
 	
-	private double spitOutTime = 2;
+	private double spitOutTime = 3;
 	
 	public MoveLeftAuto(SwerveDrive chassisIn, BoxManager boxMaangerIn) {
 		chassis = chassisIn;
@@ -162,6 +162,7 @@ public class MoveLeftAuto implements AutoCode
 	private void boxRising() {
 		if(boxManager.boxLifter.getSwitchMiddle()) {
 			boxManager.boxLifter.stop();
+			boxManager.boxCollector.armsRetract();
 			boxCollectorState = BoxCollectorState.IDLE;
 			boxCollectorStatePrevious = BoxCollectorState.RISING;
 		}
@@ -172,8 +173,9 @@ public class MoveLeftAuto implements AutoCode
 		
 		if(timeNow >= timeFuture) {
 			boxManager.stopBoxSucker();
-			boxManager.boxLifter.lower();
-			boxCollectorState = BoxCollectorState.LOWERING;
+			//boxManager.boxLifter.lower(); //Not lowering Box Collector to protect the arms
+			//boxCollectorState = BoxCollectorState.LOWERING;
+			boxCollectorState = BoxCollectorState.DONE;
 			boxCollectorStatePrevious = BoxCollectorState.SPIITING_OUT;
 		}
 	}
