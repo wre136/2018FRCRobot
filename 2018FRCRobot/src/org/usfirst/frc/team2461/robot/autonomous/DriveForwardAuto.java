@@ -15,7 +15,7 @@ public class DriveForwardAuto implements AutoCode
 	private SwerveDrive chassis;
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	
-	private double autoLineDistance = 60; //set to 60inches for testing purposes
+	private double autoLineDistance = 120; //set to 60inches for testing purposes
 	private double timeFuture;
 	
 	public DriveForwardAuto(SwerveDrive driveTrain)
