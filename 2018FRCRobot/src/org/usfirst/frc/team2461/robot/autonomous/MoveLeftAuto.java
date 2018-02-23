@@ -103,20 +103,25 @@ public class MoveLeftAuto implements AutoCode
 			if(!chassis.isDone()) {
 				drivingState = DrivingState.MOVE_LEFT;
 				drivingStatePrevious = DrivingState.DRIVE_FORWARD;
+				chassis.reset();
 				chassis.addAutoCommand(factory.command_MoveLeft(autoMoveLeftDistance));
-				//chassis.driveAuto(); // Not sure if this will be needed
+				chassis.driveAuto(); // Not sure if this will be needed
+				timeFuture = Robot.timer.get() + 0.1;
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("static-access")
 	private void driveMoveLeft() {
-		chassis.driveAuto();
-
-		if(chassis.isDone()) {
-			drivingState = DrivingState.STOP;
-			chassis.addAutoCommand(factory.command_Stop());
-			drivingStatePrevious = DrivingState.MOVE_LEFT;
+		//chassis.driveAuto();
+		if(Robot.timer.get() > timeFuture) {
+			if(!chassis.isDone()) {
+				drivingState = DrivingState.STOP;
+				drivingStatePrevious = DrivingState.MOVE_LEFT;
+				chassis.reset();
+				chassis.addAutoCommand(factory.command_Stop());
+				chassis.driveAuto();
+			}
 		}
 	}
 	
