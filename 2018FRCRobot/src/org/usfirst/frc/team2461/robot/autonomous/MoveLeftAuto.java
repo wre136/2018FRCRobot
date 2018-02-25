@@ -46,6 +46,14 @@ public class MoveLeftAuto implements AutoCode
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
 	
+	/**
+	 * This is the method that runs the MoveLeftAuto code in Autonomous.
+	 * 
+	 * <p>
+	 * Call this method in Autonomous Periodic to run the MoveLeftAuto code using
+	 * the State Machine mechanics and sensor input.
+	 * </p>
+	 */
 	public void run() {
 		switch(drivingState) {
 			case BEGIN:
@@ -95,6 +103,18 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the BEGIN State of the driving state machine.
+	 * <p><ol>
+	 * <li>Clears the drive train of all autoCommands</li>
+	 * <li>Adds an autoCommand to drive forward the autoSwitchDistance distance</li>
+	 * <li>Activates the turning and driving PID Loops</li>
+	 * <li>Changes the DrivingState to the DRIVE_FORWARD state while changing the DrivingStatePrevious state to
+	 * BEGIN</li>
+	 * <li>Creates a time variable that is 0.1 seconds from now to verify
+	 * that we do not check the drive train for being finished just yet</li>
+	 * </ol></p>
+	 */
 	@SuppressWarnings("static-access")
 	private void driveBegin() {
 		chassis.clearAutoCommands();
@@ -105,6 +125,21 @@ public class MoveLeftAuto implements AutoCode
 		timeDriveFuture = Robot.timer.get() + 0.1;
 	}
 	
+	/**
+	 * Method for the DRIVE_FORWARD State of the driving state machine.
+	 * <p><ol>
+	 * <li>Gets the current time</li>
+	 * <li>Checks to see if current time is greater than future driving time</li>
+	 * <li>If so, evaluate if drive train has moved as needed</li>
+	 * <li>If so, change the DrivingState to the MOVE_LEFT state while changing the DrivingStatePrevious state to
+	 * DRIVE_FORWARD</li>
+	 * <li>Reset the drive and turn PID Loops of the drive train</li>
+	 * <li>Add a new AutoCommand to move the robot left the specified distance</li>
+	 * <li>Restart the drive and turn PID loops</li>
+	 * <li>Creates a time variable that is 0.1 seconds from now to verify
+	 * that we do not check the drive train for being finished just yet</li>
+	 * </ol></p>
+	 */
 	@SuppressWarnings("static-access")
 	private void driveDriveForward() {
 		timeDriveNow = Robot.timer.get();
@@ -120,6 +155,21 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 
+	/**
+	 * Method for the MOVE_LEFT State of the driving state machine.
+	 * <p><ol>
+	 * <li>Gets the current time</li>
+	 * <li>Checks to see if current time is greater than future driving time</li>
+	 * <li>If so, evaluate if drive train has moved as needed</li>
+	 * <li>If so, change the DrivingState to the STOP state while changing the DrivingStatePrevious state to
+	 * MOVE_LEFT</li>
+	 * <li>Reset the drive and turn PID Loops of the drive train</li>
+	 * <li>Add a new AutoCommand to stop the robot</li>
+	 * <li>Restart the drive and turn PID loops</li>
+	 * <li>Creates a time variable that is 0.1 seconds from now to verify
+	 * that we do not check the drive train for being finished just yet</li>
+	 * </ol></p>
+	 */
 	@SuppressWarnings("static-access")
 	private void driveMoveLeft() {
 		timeDriveNow = Robot.timer.get();
@@ -134,6 +184,23 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the DRIVE_BACK State of the driving state machine.
+	 * <p><ol>
+	 * <li>Gets the current time</li>
+	 * <li>Checks to see if current time is greater than future driving time</li>
+	 * <li>If so, evaluate if drive train has moved as needed</li>
+	 * <li>If so, change the DrivingState to the STOP state while changing the DrivingStatePrevious state to
+	 * DRIVE_BACK</li>
+	 * <li>Reset the drive and turn PID Loops of the drive train</li>
+	 * <li>Add a new AutoCommand to stop the robot</li>
+	 * <li>Restart the drive and turn PID loops</li>
+	 * <li>Extend the arms of the Box Collector</li>
+	 * <li>Lower the Box Lifter to the low position</li>
+	 * <li>If so, change the BoxCollectorState to the LOWERING state while changing the BoxCollectorStatePrevious state to
+	 * DONE</li>
+	 * </ol></p>
+	 */
 	@SuppressWarnings("static-access")
 	private void driveDriveBack() {
 		timeDriveNow = Robot.timer.get();
