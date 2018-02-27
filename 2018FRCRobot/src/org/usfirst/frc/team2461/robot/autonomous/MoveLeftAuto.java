@@ -221,10 +221,25 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the STOP State of the driving state machine.
+	 * <p>Verify that the robot gets to a stop state</p>
+	 */
 	private void driveStop() {
 		chassis.driveAuto();
 	}
 	
+	/**
+	 * Method for the BEGIN State of the Box Collector state machine.
+	 * <p><ol>
+	 * <li>Extends the arms of the Box Collector</li>
+	 * <li>Creates a time variable that is 0.5 seconds from now to verify
+	 * that we do not lower the box lifter until the arms have had time to
+	 * open</li>
+	 * <li>Changes the BoxCollectorState to the EXTENDING_ARMS state while changing the BoxCollectorStatePrevious state to
+	 * BEGIN</li>
+	 * </ol></p>
+	 */
 	private void boxBegin() {
 		boxManager.boxCollector.armsExtend();
 		timeBoxManagerFuture = Robot.timer.get() + 0.5;
@@ -232,6 +247,16 @@ public class MoveLeftAuto implements AutoCode
 		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
 	}
 	
+	/**
+	 * Method for the EXTENDING_ARMS State of the Box Collector state machine.
+	 * <p><ol>
+	 * <li>Gets the current time</li>
+	 * <li>Checks if current time is greater that futureBoxManager time</li>
+	 * <li>If so, lower the Box Lifter to the low position</li>
+	 * <li>Changes the BoxCollectorState to the LOWERING state while changing the BoxCollectorStatePrevious state to
+	 * EXTENDING_ARMS</li>
+	 * </ol></p>
+	 */
 	private void boxExtendingArms() {
 		timeBoxManagerNow = Robot.timer.get();
 		if(timeBoxManagerNow >= timeBoxManagerFuture) {
@@ -241,6 +266,20 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the LOWERING State of the Box Collector state machine.
+	 * <p><ol>
+	 * <li>Gets if the lower position switch is hit</li>
+	 * <li>If so, checks if the boxCollectorStatePrevious is DONE</li>
+	 * <ol><li>If so, stop the Box Lifter</li>
+	 * <li>Changes the BoxCollectorState to the DONE state while changing the BoxCollectorStatePrevious state to
+	 * LOWERING</li></ol>
+	 * <li>Else</li> <ol>
+	 * <li>Stop the Box Lifter</li>
+	 * <li>Changes the BoxCollectorState to the IDLE state while changing the BoxCollectorStatePrevious state to
+	 * LOWERING</li></ol>
+	 * </ol></p>
+	 */
 	private void boxLowering() {
 		if(boxManager.boxLifter.getSwitchLow()) {
 			if(boxCollectorStatePrevious == BoxCollectorState.DONE) {
@@ -255,6 +294,16 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the RISING State of the Box Collector state machine.
+	 * <p><ol>
+	 * <li>Gets if the middle position switch is hit</li>
+	 * <li>If so, stop the Box Lifter</li>
+	 * <li>Retract the Box Collector Arms</li>
+	 * <li>Changes the BoxCollectorState to the IDLE state while changing the BoxCollectorStatePrevious state to
+	 * RISING</li>
+	 * </ol></p>
+	 */
 	private void boxRising() {
 		if(boxManager.boxLifter.getSwitchMiddle()) { // Once we reach the middle switch
 			boxManager.boxLifter.stop();
@@ -387,6 +436,11 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 
+	/**
+	 * Method to disable the Drive and Turn PID Loops of the drive train
+	 * , clears all autoCommands and sets the DrivingState and BoxCollectorState
+	 * state machines back to their BEGIN states
+	 */
 	@Override
 	public void reset()
 	{
