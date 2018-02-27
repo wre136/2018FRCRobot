@@ -313,6 +313,21 @@ public class MoveLeftAuto implements AutoCode
 		}
 	}
 	
+	/**
+	 * Method for the SPITTING_OUT State of the Box Collector state machine.
+	 * <p><ol>
+	 * <li>Gets the current time and sees if its greater than future BoxManager Time</li>
+	 * <li>If so, stop the Box Sucker</li>
+	 * <li>Changes the BoxCollectorState to the DONE state while changing the BoxCollectorStatePrevious state to
+	 * SPITTING_OUT</li>
+	 * <li>Changes the DrivingState to the DRIVE_BACK state while changing the BoxCollectorStatePrevious state to
+	 * STOP</li>
+	 * <li>Disable the PID Loops of the Drive Train and clear its autoCommands</li>
+	 * <li>Add autoCommand for robot to drive back the specified distance</li>
+	 * <li>Start the drive train PID Loops</li>
+	 * <li>Create timer object to prevent drive train from being checked until later</li>
+	 * </ol></p>
+	 */
 	@SuppressWarnings("static-access")
 	private void boxSpittingOut() {
 		timeBoxManagerNow = Robot.timer.get();
