@@ -3,7 +3,7 @@ package org.usfirst.frc.team2461.robot.autonomous;
 import org.usfirst.frc.team2461.robot.BoxManager;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 
-public class MoveLeftAuto extends MoveAuto implements AutoCode
+public class MoveLeftAuto extends MoveAuto
 {
 
 	public MoveLeftAuto(SwerveDrive chassisIn, BoxManager boxMaangerIn) {
