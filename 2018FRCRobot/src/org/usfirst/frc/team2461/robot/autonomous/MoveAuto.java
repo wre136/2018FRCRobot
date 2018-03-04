@@ -5,10 +5,10 @@ import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
 
-public class MoveAuto implements AutoCode {
+public abstract class MoveAuto implements AutoCode {
 	
 	private enum DrivingState {
-		BEGIN, DRIVE_FORWARD, MOVE_LEFT, STOP, DRIVE_BACK
+		BEGIN, DRIVE_FORWARD, MOVE_SIDE, STOP, DRIVE_BACK
 	}
 	
 	private DrivingState drivingState;
@@ -21,7 +21,7 @@ public class MoveAuto implements AutoCode {
 	private BoxCollectorState boxCollectorState;
 	private BoxCollectorState boxCollectorStatePrevious;
 	
-	private SwerveDrive chassis;
+	protected SwerveDrive chassis;
 	private BoxManager boxManager;
 	
 	//Time Management Elements
@@ -30,9 +30,9 @@ public class MoveAuto implements AutoCode {
 	private double timeBoxManagerFuture;
 	private double timeBoxManagerNow;
 	
-	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
+	protected SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	private double autoSwitchDistance = 120; //set to 60inches for testing purposes
-	private double autoMoveSideDistance = 48;
+	protected double autoMoveSideDistance = 48;
 	private double autoDriveBackDistance = 10;
 	private double autoStartRisingBoxDistance = 100;
 	private double autoStartSpittingBoxDistance = 120;
@@ -63,8 +63,8 @@ public class MoveAuto implements AutoCode {
 			case DRIVE_FORWARD:
 				driveDriveForward();
 				break;
-			case MOVE_LEFT:
-				driveMoveLeft();
+			case MOVE_SIDE:
+				driveMoveSide();
 				break;
 			case STOP:
 				driveStop();
@@ -146,24 +146,25 @@ public class MoveAuto implements AutoCode {
 		timeDriveNow = Robot.timer.get();
 		if(timeDriveNow > timeDriveFuture) { // Adding Delay to make sure autoCommand takes effect before checking
 			if(!chassis.isDone()) {
-				drivingState = DrivingState.MOVE_LEFT;
+				drivingState = DrivingState.MOVE_SIDE;
 				drivingStatePrevious = DrivingState.DRIVE_FORWARD;
 				chassis.reset();
-				chassis.addAutoCommand(factory.command_MoveLeft(autoMoveSideDistance));
+				prepareMoveSideCommand();
+				//chassis.addAutoCommand(factory.command_MoveLeft(autoMoveSideDistance));
 				chassis.driveAuto(); // Not sure if this will be needed
 				timeDriveFuture = Robot.timer.get() + 0.1;
 			}
 		}
 	}
-
+	
 	/**
-	 * Method for the MOVE_LEFT State of the driving state machine.
+	 * Method for the MOVE_SIDE State of the driving state machine.
 	 * <p><ol>
 	 * <li>Gets the current time</li>
 	 * <li>Checks to see if current time is greater than future driving time</li>
 	 * <li>If so, evaluate if drive train has moved as needed</li>
 	 * <li>If so, change the DrivingState to the STOP state while changing the DrivingStatePrevious state to
-	 * MOVE_LEFT</li>
+	 * MOVE_SIDE</li>
 	 * <li>Reset the drive and turn PID Loops of the drive train</li>
 	 * <li>Add a new AutoCommand to stop the robot</li>
 	 * <li>Restart the drive and turn PID loops</li>
@@ -172,12 +173,12 @@ public class MoveAuto implements AutoCode {
 	 * </ol></p>
 	 */
 	@SuppressWarnings("static-access")
-	private void driveMoveLeft() {
+	protected void driveMoveSide() {
 		timeDriveNow = Robot.timer.get();
 		if(timeDriveNow > timeDriveFuture) {
 			if(!chassis.isDone()) {
 				drivingState = DrivingState.STOP;
-				drivingStatePrevious = DrivingState.MOVE_LEFT;
+				drivingStatePrevious = DrivingState.MOVE_SIDE;
 				chassis.reset();
 				chassis.addAutoCommand(factory.command_Stop());
 				chassis.driveAuto();
@@ -382,8 +383,8 @@ public class MoveAuto implements AutoCode {
 				return "Driving State: Begin";
 			case DRIVE_FORWARD:
 				return "Driving State: Driving Forward";
-			case MOVE_LEFT:
-				return "Driving State: Moving Left";
+			case MOVE_SIDE:
+				return printMoveSideState();
 			case STOP:
 				return "Driving State: Stopped";
 			case DRIVE_BACK:
@@ -399,8 +400,8 @@ public class MoveAuto implements AutoCode {
 				return "Driving State: Begin";
 			case DRIVE_FORWARD:
 				return "Driving State: Driving Forward";
-			case MOVE_LEFT:
-				return "Driving State: Moving Left";
+			case MOVE_SIDE:
+				return printMoveSideState();
 			case STOP:
 				return "Driving State: Stopped";
 			case DRIVE_BACK:
@@ -465,5 +466,9 @@ public class MoveAuto implements AutoCode {
 		drivingState = DrivingState.BEGIN;
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
+	
+	protected abstract void prepareMoveSideCommand();
+	
+	protected abstract String printMoveSideState();
 
 }
