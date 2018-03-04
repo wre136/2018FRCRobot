@@ -229,8 +229,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		autoCode.run();
-		
-		//chassis.driveAuto();
 	}
 	
 	@Override
