@@ -64,10 +64,10 @@ public abstract class MoveAuto implements AutoCode {
 	
 	@Override
 	/**
-	 * This is the method that runs the MoveLeftAuto code in Autonomous.
+	 * This is the method that runs the MoveAuto code in Autonomous.
 	 * 
 	 * <p>
-	 * Call this method in Autonomous Periodic to run the MoveLeftAuto code using
+	 * Call this method in Autonomous Periodic to run the MoveAuto code using
 	 * the State Machine mechanics and sensor input.
 	 * </p>
 	 */
@@ -381,12 +381,23 @@ public abstract class MoveAuto implements AutoCode {
 		}
 	}
 
+	/**
+	 * Returns String object that describes what the current state of the autonomous code is. 
+	 * The first part of the string is for the driving state while the second part is for the 
+	 * Box Collector state
+	 */
 	@Override
 	public String getStateString()
 	{
 		return drivingStateToString() + " " + boxCollectorStateToString();
 	}
 	
+	
+	/**
+	 * Returns String object that describes what the previous state of the autonomous code was. 
+	 * The first part of the string is for the driving state while the second part is for the 
+	 * Box Collector state
+	 */
 	@Override
 	public String getStatePreviousString()
 	{
