@@ -5,6 +5,16 @@ import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
 
+/**
+ * <h1> MoveAuto Class</h1>
+ * @author William R Edds FRC 2461 - The METAL-SKINs
+ * <p>
+ * 2018 season MoveAuto abstract class that controls the drive train, 
+ * the Box Collector and Box Lifter during Autonomous Periodic. To 
+ * use this class, use one of its children classes:
+ * <ul><li>MoveLeftAuto Class</li><li>MoveRightAuto Class</li></ul>
+ * </p>
+ */
 public abstract class MoveAuto implements AutoCode {
 	
 	private enum DrivingState {
@@ -39,6 +49,12 @@ public abstract class MoveAuto implements AutoCode {
 	
 	private double spitOutTime = 3;
 
+	/**
+	 * Used by child classes to create a MoveAuto object that controls the drive train, Box Collector 
+	 * and Box Lifter during autonomous periodic
+	 * @param chassisIn SwerveDrive object representing the drive train
+	 * @param boxMaangerIn BoxManager object
+	 */
 	public MoveAuto(SwerveDrive chassisIn, BoxManager boxMaangerIn) {
 		chassis = chassisIn;
 		boxManager = boxMaangerIn;
@@ -467,8 +483,16 @@ public abstract class MoveAuto implements AutoCode {
 		boxCollectorState = BoxCollectorState.BEGIN;
 	}
 	
+	/**
+	 * Abstract method to be overridden in child class to define
+	 * what direction the robot will move in
+	 */
 	protected abstract void prepareMoveSideCommand();
 	
+	/**
+	 * Abstract method to be overridden in child class to define
+	 * what String the drivingStateToString() method returns
+	 */
 	protected abstract String printMoveSideState();
 
 }
