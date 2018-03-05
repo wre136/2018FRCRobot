@@ -31,6 +31,14 @@ public class BoxManager
 	
 	BoxCollectorArmsState boxCollectorArmsState;
 	
+	private enum BoxManagerTestState {
+		BEGIN, EXTEND_ARM, LOWER_TO_LOW, RAISE_TO_HIGH, LOWER_TO_MID, ARM_MOTORS_SUCK_IN, ARM_MOTOTS_SPIT_OUT,
+		ARM_MOTORS_STOP, REAR_MOTORS_SUCK_IN, REAR_MOTORS_SPIT_OUT, REAR_MOTORS_STOP, RETRACT, DONE
+	}
+	
+	private BoxManagerTestState boxManagerTestState;
+	private BoxManagerTestState boxManagerTestStatePrevious;
+	
 	public BoxManager(BoxCollector boxCollectorIn, BoxLifter boxLifterIn, MetalSkinsController playerIn) {
 		boxCollector = boxCollectorIn;
 		boxCollectorStateNow = BoxCollectorState.BEGIN;
@@ -94,71 +102,6 @@ public class BoxManager
 		}
 	}
 	
-	/**
-	 * Performs tests of Box Collector and Box Lifter subsystems.
-	 * <p>
-	 * The Box Collector will test in the following order:
-	 * <ol>
-	 * <li>Extend the arms</li>
-	 * <li>Run arm motors to suck in a box</li>
-	 * <li>Run arm motors to spit out a box</li>
-	 * <li>Stop arm motors and run rear motors to suck in a box</li>
-	 * <li>Run rear motors to spit out a box</li>
-	 * <li>Stop rear motors and retract arms</li>
-	 * 
-	 * The Box Lifter will test in the following order:
-	 * <ol>
-	 * <li>Lower Box Collector to low position if not already in low position</li>
-	 * <li>Raise Box Collector to high position</li>
-	 * <li>Lower Box Collector to middle position</li>
-	 * </p>
-	 * @return Returns whether the tests are finished. True means they are done.
-	 */
-	public boolean runTest() {
-		if(!runTestBoxCollector()) {
-			return false;
-		} else if(!runTestBoxLifter()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	private boolean runTestBoxCollector() {
-		switch(boxCollectorStateNow) {
-			case BEGIN:
-				boxCollectorBeginTest();
-				return false;
-			case REST:
-				return true;
-			case SUCK_IN:
-				boxCollectorSuckInTest();
-				return false;
-			default:
-				return false;
-			
-		}
-	}
-	
-	private boolean runTestBoxLifter() {
-		switch(boxLifterStateNow) {
-			case BEGIN:
-				boxLifterBeginTest();
-				return false;
-			case LIFTING:
-				boxLifterLiftingTest();
-				return false;
-			case LOWERING:
-				boxLifterLoweringTest();
-				return false;
-			case MIDDLE:
-				return true;
-			default:
-				return false;
-			
-		}
-	}
-	
 	private void boxCollectorBegin()
 	{
 		boxCollector.armsExtend();
@@ -166,14 +109,6 @@ public class BoxManager
 		boxCollector.setRearMotorsStop();
 		boxCollectorStateNow = BoxCollectorState.REST;
 		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
-	}
-	
-	private void boxCollectorBeginTest() {
-		boxCollector.setArmMotorsSuckIn();
-		boxCollector.armsExtend();
-		boxCollectorStateNow = BoxCollectorState.SUCK_IN;
-		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
-		testTime = Robot.timer.get() + 2;
 	}
 	
 	/**
@@ -245,29 +180,6 @@ public class BoxManager
 		}
 	}
 	
-	private void boxCollectorSuckInTest() {
-		timeNow = Robot.timer.get();
-		
-		if(timeNow >= (testTime + 8)) {
-			boxCollector.setRearMotorsStop();
-			boxCollectorStateNow = BoxCollectorState.REST;
-			boxCollectorStatePrevious = BoxCollectorState.SUCK_IN;
-			
-			boxCollectorArmRetract();
-			
-		} else if(timeNow >= (testTime + 6)) {
-			boxCollector.setRearMotorsSpitOut();
-		} else if(timeNow >= (testTime + 4)) {
-			
-			boxCollector.setRearMotorsSuckIn();
-		} else if(timeNow >= (testTime + 2)) {
-			boxCollector.setArmMotorsStop();
-			
-		} else if(timeNow >= testTime) {
-			boxCollector.setArmMotorsSpitOut();
-		}
-	}
-	
 	/**
 	 * Method for the SPIT_OUT State of the box collector state machine.
 	 * <p>
@@ -315,7 +227,7 @@ public class BoxManager
 	 */
 	public void suckBoxIn() {
 		if(boxLifter.getSwitchLow()) {
-			boxCollector.setArmMotorsSuckIn();;
+			boxCollector.setArmMotorsSuckIn();
 		}
 		
 		boxCollector.setRearMotorsSuckIn();
@@ -349,29 +261,6 @@ public class BoxManager
 			boxLifterStateNow = BoxLifterState.MIDDLE;
 		} else {
 			boxLifterStateNow = BoxLifterState.IDLE;
-		}
-	}
-	
-	/**
-	 * This method readys the Box Collector and Box Lifter subsystems for testing.
-	 * This <b>MUST</b> be ran before runTest()
-	 */
-	public void initTest() {
-		boxCollectorStateNow = BoxCollectorState.BEGIN;
-		boxLifterStateNow = BoxLifterState.BEGIN;
-	}
-	
-	private void boxLifterBeginTest() {
-		boxLifter.stop();
-		boxCollectorArmDeploy();
-		boxLifterStatePrevious = BoxLifterState.BEGIN;
-		
-		if(boxLifter.getSwitchLow()) {
-			boxLifter.rise();
-			boxLifterStateNow = BoxLifterState.LIFTING;
-		} else {
-			boxLifter.lower();
-			boxLifterStateNow = BoxLifterState.LOWERING;
 		}
 	}
 	
@@ -435,20 +324,6 @@ public class BoxManager
 		}
 	}
 	
-	private void boxLifterLoweringTest() {
-		if(boxLifterStatePrevious == BoxLifterState.HIGH) {
-			if(boxLifter.getSwitchMiddle()) {
-				boxLifter.stop();
-				boxLifterStateNow = BoxLifterState.MIDDLE;
-				boxLifterStatePrevious = BoxLifterState.LOWERING;
-			}
-		} else if(boxLifter.getSwitchLow()) {
-			boxLifter.rise();
-			boxLifterStateNow = BoxLifterState.LIFTING;
-			boxLifterStatePrevious = BoxLifterState.LOW;
-		}
-	}
-	
 	/**
 	 * Method for the LIFTING state of the box lifter state machine.
 	 * This is the state where the lifter will be lifting.
@@ -468,6 +343,7 @@ public class BoxManager
 		if(boxLifter.getMode() == BoxLifter.Mode.AUTOMATIC) { // if mode is Automatic
 			if(boxLifter.getSwitchMiddle() && boxLifterStatePrevious != BoxLifterState.MIDDLE) {
 				boxLifter.stop();
+				boxCollector.armsRetract();
 				boxLifterStateNow = BoxLifterState.MIDDLE;
 				boxLifterStatePrevious = BoxLifterState.LIFTING;
 			} else if(boxLifter.getSwitchHigh()) {
@@ -487,14 +363,6 @@ public class BoxManager
 				boxLifterStateNow = BoxLifterState.HIGH;
 				boxLifterStatePrevious = BoxLifterState.LIFTING;
 			}
-		}
-	}
-	
-	private void boxLifterLiftingTest() {
-		if(boxLifter.getSwitchHigh()) {
-			boxLifter.lower();
-			boxLifterStateNow = BoxLifterState.LOWERING;
-			boxLifterStatePrevious = BoxLifterState.HIGH;
 		}
 	}
 	
@@ -527,7 +395,6 @@ public class BoxManager
 	private void boxLifterMiddle() {
 		if(player.getBumper(Hand.kRight)) {
 			boxLifter.rise();
-			boxCollectorArmRetract();
 			boxLifterStateNow = BoxLifterState.LIFTING;
 			boxLifterStatePrevious = BoxLifterState.MIDDLE;
 		} else if(player.getBumper(Hand.kLeft)) {
@@ -651,5 +518,199 @@ public class BoxManager
 		boxCollectorStateNow = BoxCollectorState.BEGIN;
 		boxLifterStatePrevious = boxLifterStateNow;
 		boxLifterStateNow = BoxLifterState.BEGIN;
+	}
+	
+	/**
+	 * This method readys the Box Collector and Box Lifter subsystems for testing.
+	 * This <b>MUST</b> be ran before runTest()
+	 */
+	public void initTest() {
+		boxCollectorStateNow = BoxCollectorState.BEGIN;
+		boxLifterStateNow = BoxLifterState.BEGIN;
+		boxManagerTestState = BoxManagerTestState.BEGIN;
+	}
+	
+	/**
+	 * Performs tests of Box Collector and Box Lifter subsystems.
+	 * <p>
+	 * The Box Collector will test in the following order:
+	 * <ol>
+	 * <li>Extend the arms</li>
+	 * <li>Lower Box Collector to low position if not already in low position</li>
+	 * <li>Raise Box Collector to high position</li>
+	 * <li>Lower Box Collector to middle position</li>
+	 * <li>Run arm motors to suck in a box</li>
+	 * <li>Run arm motors to spit out a box</li>
+	 * <li>Stop arm motors</li>
+	 * <li>Run rear motors to suck in a box</li>
+	 * <li>Run rear motors to spit out a box</li>
+	 * <li>Stop rear motors</li>
+	 * <li>Retract arms</li>
+	 * <ol>
+	 * </p>
+	 * @return Returns whether the tests are finished. True means they are done.
+	 */
+	public boolean runTest() {
+		switch(boxManagerTestState) {
+		case ARM_MOTORS_STOP:
+			boxManagerTestArmMotorStop();
+			return false;
+		case ARM_MOTORS_SUCK_IN:
+			boxManagerTestArmMotorsSuckIn();
+			return false;
+		case ARM_MOTOTS_SPIT_OUT:
+			boxManagerTestArmMotorsSpitOut();
+			return false;
+		case BEGIN:
+			boxManagerTestBegin();
+			return false;
+		case DONE:
+			return true;
+		case EXTEND_ARM:
+			boxManagerTestExtend();
+			return false;
+		case LOWER_TO_LOW:
+			boxManagerTestLowerToLow();
+			return false;
+		case LOWER_TO_MID:
+			boxManagerTestLowerToMid();
+			return false;
+		case RAISE_TO_HIGH:
+			boxManagerTestRaiseToHigh();
+			return false;
+		case REAR_MOTORS_SPIT_OUT:
+			boxManagerTestRearMotorsSpitOut();
+			return false;
+		case REAR_MOTORS_STOP:
+			boxManagerTestRearMotorsStop();
+			return false;
+		case REAR_MOTORS_SUCK_IN:
+			boxManagerTestRearMotorsSuckIn();
+			return false;
+		case RETRACT:
+			boxManagerTestRetract();
+			return false;
+		default:
+			return false;	
+		}
+	}
+	
+	private void boxManagerTestBegin() {
+		boxCollector.setArmMotorsStop();
+		boxCollector.setRearMotorsStop();
+		boxLifter.stop();
+		boxCollector.armsExtend();
+		boxManagerTestState = BoxManagerTestState.EXTEND_ARM;
+		boxManagerTestStatePrevious = BoxManagerTestState.BEGIN;
+		testTime = Robot.timer.get() + 1;
+	}
+	
+	private void boxManagerTestExtend() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			if(!boxLifter.getSwitchLow()) {
+				boxLifter.lower();
+				boxManagerTestState = BoxManagerTestState.LOWER_TO_LOW;
+				boxManagerTestStatePrevious = BoxManagerTestState.EXTEND_ARM;
+			} else {
+				boxLifter.rise();
+				boxManagerTestState = BoxManagerTestState.RAISE_TO_HIGH;
+				boxManagerTestStatePrevious = BoxManagerTestState.EXTEND_ARM;
+			}
+		}
+	}
+	
+	private void boxManagerTestLowerToLow() {
+		if(boxLifter.getSwitchLow()) {
+			boxLifter.rise();
+			boxManagerTestState = BoxManagerTestState.RAISE_TO_HIGH;
+			boxManagerTestStatePrevious = BoxManagerTestState.LOWER_TO_LOW;
+		}
+	}
+	
+	private void boxManagerTestRaiseToHigh() {
+		if(boxLifter.getSwitchHigh()) {
+			boxLifter.lower();
+			boxManagerTestState = BoxManagerTestState.LOWER_TO_MID;
+			boxManagerTestStatePrevious = BoxManagerTestState.RAISE_TO_HIGH;
+		}
+	}
+	
+	private void boxManagerTestLowerToMid() {
+		if(boxLifter.getSwitchMiddle()) {
+			boxLifter.stop();
+			boxCollector.setArmMotorsSuckIn();
+			boxManagerTestState = BoxManagerTestState.ARM_MOTORS_SUCK_IN;
+			boxManagerTestStatePrevious = BoxManagerTestState.LOWER_TO_MID;
+			testTime = Robot.timer.get() + 2;
+		}
+	}
+	
+	private void boxManagerTestArmMotorsSuckIn() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxCollector.setArmMotorsSpitOut();
+			boxManagerTestState = BoxManagerTestState.ARM_MOTOTS_SPIT_OUT;
+			boxManagerTestStatePrevious = BoxManagerTestState.ARM_MOTORS_SUCK_IN;
+			testTime = Robot.timer.get() + 2;
+		}
+	}
+	
+	private void boxManagerTestArmMotorsSpitOut() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxCollector.setArmMotorsStop();
+			boxManagerTestState = BoxManagerTestState.ARM_MOTORS_STOP;
+			boxManagerTestStatePrevious = BoxManagerTestState.ARM_MOTOTS_SPIT_OUT;
+			testTime = Robot.timer.get() + 1;
+		}
+	}
+	
+	private void boxManagerTestArmMotorStop() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxCollector.setRearMotorsSuckIn();
+			boxManagerTestState = BoxManagerTestState.REAR_MOTORS_SUCK_IN;
+			boxManagerTestStatePrevious = BoxManagerTestState.ARM_MOTORS_STOP;
+			testTime = Robot.timer.get() + 2;
+		}
+	}
+	
+	private void boxManagerTestRearMotorsSuckIn() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxCollector.setRearMotorsSpitOut();
+			boxManagerTestState = BoxManagerTestState.REAR_MOTORS_SPIT_OUT;
+			boxManagerTestStatePrevious = BoxManagerTestState.REAR_MOTORS_SUCK_IN;
+			testTime = Robot.timer.get() + 2;
+		}
+	}
+	
+	private void boxManagerTestRearMotorsSpitOut() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxCollector.setArmMotorsStop();
+			boxManagerTestState = BoxManagerTestState.REAR_MOTORS_STOP;
+			boxManagerTestStatePrevious = BoxManagerTestState.REAR_MOTORS_SPIT_OUT;
+			testTime = Robot.timer.get() + 1;
+		}
+	}
+	
+	private void boxManagerTestRearMotorsStop() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxCollector.armsRetract();
+			boxManagerTestState = BoxManagerTestState.RETRACT;
+			boxManagerTestStatePrevious = BoxManagerTestState.REAR_MOTORS_STOP;
+			testTime = Robot.timer.get() + 1;
+		}
+	}
+	
+	private void boxManagerTestRetract() {
+		timeNow = Robot.timer.get();
+		if(timeNow > testTime) {
+			boxManagerTestState = BoxManagerTestState.DONE;
+			boxManagerTestStatePrevious = BoxManagerTestState.RETRACT;
+		}
 	}
 }
