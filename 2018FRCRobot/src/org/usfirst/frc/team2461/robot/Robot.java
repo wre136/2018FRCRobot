@@ -367,7 +367,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotPeriodic()
 	{
-		if(true)
+		if(false)
 			printDataToScreen();
 	}
 }
