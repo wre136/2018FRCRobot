@@ -18,7 +18,16 @@ public class BoxLifter
 	private DigitalInput switchHigher;
 	
 	public enum Mode {
-		AUTOMATIC, MANUAL
+		AUTOMATIC, MANUAL;
+		
+		public String toString() {
+			if(this.ordinal() == 0) {
+				return "AUTOMATIC";
+			}
+			else {
+				return "MANUAL";
+			}
+		}
 	}
 	
 	private Mode mode;
