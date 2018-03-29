@@ -80,6 +80,7 @@ public class Robot extends IterativeRobot {
 	
 	
 	MetalSkinsController player1 = new MetalSkinsController(0, true);
+	MetalSkinsController player2 = new MetalSkinsController(1, true);
 	
 	//Create Drive train motors
 	WPI_TalonSRX motor_FL_Drive = new WPI_TalonSRX( motor_FL_Drive_int);
@@ -126,11 +127,11 @@ public class Robot extends IterativeRobot {
 	DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
 	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber);
 	
-	BoxManager boxManager = new BoxManager(boxCollector, boxLifter, player1);
+	BoxManager boxManager = new BoxManager(boxCollector, boxLifter, player2);
 	
 	Talon lifterMotor1 = new Talon(motor_Robot_Lifter_1_int);
 	Talon lifterMotor2 = new Talon(motor_Robot_Lifter_2_int);
-	RobotLift robotLift = new RobotLift(lifterMotor1, lifterMotor2, player1);
+	RobotLift robotLift = new RobotLift(lifterMotor1, lifterMotor2, player2);
 	
 	public static Timer timer = new Timer();
 	
