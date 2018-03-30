@@ -24,7 +24,7 @@ public class MetalSkinsController extends XboxController
 	@Override
 	public double getX(Hand hand)
 	{
-		double value = super.getX(hand);
+		double value = -super.getX(hand);
 		
 		if(value < precision && value > -precision)
 		{
@@ -47,7 +47,7 @@ public class MetalSkinsController extends XboxController
 	@Override
 	public double getY(Hand hand)
 	{
-		double value = super.getY(hand);
+		double value = -super.getY(hand);
 		
 		if(value < precision && value > -precision)
 		{
