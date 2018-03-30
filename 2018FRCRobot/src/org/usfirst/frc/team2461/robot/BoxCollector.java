@@ -94,13 +94,13 @@ public class BoxCollector
 	}
 	
 	public void setRearMotorsSuckIn() {
-		motorIntakeRearLeft.set(1);
-		motorIntakeRearRight.set(1);
+		motorIntakeRearLeft.set(-1);
+		motorIntakeRearRight.set(-1);
 	}
 	
 	public void setRearMotorsSpitOut() {
-		motorIntakeRearLeft.set(-1);
-		motorIntakeRearRight.set(-1);
+		motorIntakeRearLeft.set(1);
+		motorIntakeRearRight.set(1);
 	}
 	
 	public void setRearMotorsStop() {
