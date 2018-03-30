@@ -71,7 +71,7 @@ public class BoxCollector
 	}
 	
 	public boolean getArmsExtended() {
-		if(ramDeploy.get() == DoubleSolenoid.Value.kReverse) {
+		if(ramDeploy1.get()) {
 			return true;
 		} else {
 			return false;
