@@ -181,6 +181,12 @@ public class BoxManager
 			spitBoxOut();
 			boxCollectorStateNow = BoxCollectorState.SPIT_OUT;
 			boxCollectorStatePrevious = BoxCollectorState.REST;
+		} else if(boxLifterMode == BoxLifterMode.MANUAL && player.getAButton() && player.getBButton()) {
+			if(boxCollector.getArmsExtended()) {
+				boxCollector.armsRetract();
+			} else {
+				boxCollector.armsExtend();
+			}
 		}
 	}
 	
