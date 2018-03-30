@@ -27,7 +27,7 @@ public class SwerveDrive
 	 * Power factor to scale the drive motors by.
 	 * <p>Scale from 0.0 (no power at all) to 1.0 (full power!)</p>
 	 */
-	private double POWER_FACTOR = 0.5;
+	private double POWER_FACTOR = 0.75;
 	
 	/**
 	 * List to hold all commands to be ran in driveAuto() method (Autonomous code)
