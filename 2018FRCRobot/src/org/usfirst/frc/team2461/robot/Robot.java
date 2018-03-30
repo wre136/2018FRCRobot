@@ -125,7 +125,7 @@ public class Robot extends IterativeRobot {
 	Spark boxMotorGrabberR = new Spark(motor_R_Arm_int);
 	Spark boxMotorGrabberRear1 = new Spark(motor_Box_Grabber_Rear1_int);
 	Spark boxMotorGrabberRear2 = new Spark(motor_Box_Grabber_Rear2_int);
-	DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
+	//DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
 	Solenoid armGrabber1 = new Solenoid(armDoubleSolenoid[0]);
 	Solenoid armGrabber2 = new Solenoid(armDoubleSolenoid[1]);
 	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber1, armGrabber2);
