@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2461.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 
 /**
@@ -16,7 +17,8 @@ public class BoxCollector
 	private SpeedController motorIntakeArmRight;
 	private SpeedController motorIntakeRearLeft;
 	private SpeedController motorIntakeRearRight;
-	private DoubleSolenoid ramDeploy;
+	private Solenoid ramDeploy1;
+	private Solenoid ramDeploy2;
 	
 	/**
 	 * Creates a BoxCollector object.
@@ -26,14 +28,15 @@ public class BoxCollector
 	 * @param ramIn DoubleSolenoid that open-closes the arms
 	 * @param playerIn MetalSkinController to be used to activate the box collector
 	 */
-	public BoxCollector(SpeedController motorArmLeft, SpeedController motorArmRight, SpeedController motorRearLeft, SpeedController motorRearRight, DoubleSolenoid ramIn) {
+	public BoxCollector(SpeedController motorArmLeft, SpeedController motorArmRight, SpeedController motorRearLeft, SpeedController motorRearRight, Solenoid ram1In, Solenoid ram2In) {
 		motorIntakeArmLeft = motorArmLeft;
 		motorIntakeArmRight = motorArmRight;
 		motorIntakeArmRight.setInverted(true);
 		motorIntakeRearLeft = motorRearLeft;
 		motorIntakeRearRight = motorRearRight;
 		motorIntakeRearRight.setInverted(true);
-		ramDeploy = ramIn;
+		ramDeploy1 = ram1In;
+		ramDeploy2 = ram2In;
 	}
 	
 	/**
@@ -45,7 +48,8 @@ public class BoxCollector
 	 * </p>
 	 */
 	public void armsRetract() {
-		ramDeploy.set(DoubleSolenoid.Value.kForward);
+		ramDeploy1.set(true);
+		ramDeploy2.set(false);
 	}
 	
 	/**
@@ -57,10 +61,14 @@ public class BoxCollector
 	 * </p>
 	 */
 	public void armsExtend() {
-		ramDeploy.set(DoubleSolenoid.Value.kReverse);
+		ramDeploy1.set(false);
+		ramDeploy2.set(true);
 	}
 	
-
+	public void armsStall() {
+		ramDeploy1.set(true);
+		ramDeploy2.set(true);
+	}
 	
 	public boolean getArmsExtended() {
 		if(ramDeploy.get() == DoubleSolenoid.Value.kReverse) {
