@@ -43,7 +43,7 @@ public class BoxManager
 	private BoxLifterMode boxLifterMode;
 	
 	private enum BoxCollectorState {
-		BEGIN, REST, SUCK_IN, SPIT_OUT
+		BEGIN, REST, SUCK_IN, SPIT_OUT, TOGGLE_ARMS
 	}
 	
 	BoxCollectorState boxCollectorStateNow;
@@ -69,6 +69,7 @@ public class BoxManager
 		
 		boxLifter = boxLifterIn;
 		boxLifterStateNow = BoxLifterState.BEGIN;
+		boxLifterMode = BoxLifterMode.AUTOMATIC;
 		player = playerIn;
 	}
 	
@@ -94,6 +95,9 @@ public class BoxManager
 				break;
 			case SUCK_IN:
 				boxCollectorSuckIn();
+				break;
+			case TOGGLE_ARMS:
+				boxCollectorToggleArms();
 				break;
 			default:
 				break;
@@ -181,12 +185,14 @@ public class BoxManager
 			spitBoxOut();
 			boxCollectorStateNow = BoxCollectorState.SPIT_OUT;
 			boxCollectorStatePrevious = BoxCollectorState.REST;
-		} else if(boxLifterMode == BoxLifterMode.MANUAL && player.getAButton() && player.getBButton()) {
+		} else if(boxLifterMode == BoxLifterMode.MANUAL && player.getAButton()) {
 			if(boxCollector.getArmsExtended()) {
-				boxCollector.armsRetract();
-			} else {
 				boxCollector.armsExtend();
+			} else {
+				boxCollector.armsRetract();
 			}
+			boxCollectorStateNow = BoxCollectorState.TOGGLE_ARMS;
+			boxCollectorStatePrevious = BoxCollectorState.REST;
 		}
 	}
 	
@@ -276,6 +282,13 @@ public class BoxManager
 		boxCollector.setRearMotorsStop();
 	}
 	
+	public void boxCollectorToggleArms() {
+		if(!player.getAButton()) {
+			boxCollectorStateNow = BoxCollectorState.REST;
+			boxCollectorStatePrevious = BoxCollectorState.TOGGLE_ARMS;
+		}
+	}
+	
 	private void boxLifterBegin() {
 		boxLifter.stop();
 		boxLifterStatePrevious = BoxLifterState.BEGIN;
@@ -344,10 +357,6 @@ public class BoxManager
 				boxLifter.stop();
 				boxLifterStateNow = BoxLifterState.LOW;
 				boxLifterStatePrevious = BoxLifterState.LOWERING;
-			} else if(boxLifter.getSwitchMiddle()) { // If not at the bottom
-				boxLifter.stop();
-				boxLifterStateNow = BoxLifterState.MIDDLE;
-				boxLifterStatePrevious = BoxLifterState.LOWERING;
 			} else { // Turn motor off and set State to Low
 				if(!player.getBumper(Hand.kLeft)) { //If player lets go of the down button
 					boxLifter.stop(); //Turn motor off
@@ -389,10 +398,6 @@ public class BoxManager
 			if(boxLifter.getSwitchHigh()) { //if not at the Top
 				boxLifter.stop();
 				boxLifterStateNow = BoxLifterState.HIGH;
-				boxLifterStatePrevious = BoxLifterState.LIFTING;
-			} else if(boxLifter.getSwitchMiddle()) {
-				boxLifter.stop();
-				boxLifterStateNow = BoxLifterState.MIDDLE;
 				boxLifterStatePrevious = BoxLifterState.LIFTING;
 			} else { // Turn off motor and set State to High
 				if(!player.getBumper(Hand.kRight)) { // If player lets go of the up button
