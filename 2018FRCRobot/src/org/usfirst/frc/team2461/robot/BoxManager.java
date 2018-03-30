@@ -669,7 +669,7 @@ public class BoxManager
 	}
 	
 	private void boxManagerTestLowerToMid() {
-		if(boxLifter.getSwitchMiddle()) {
+		if(boxLifter.getSwitchLow()) {
 			boxLifter.stop();
 			boxCollector.setArmMotorsSuckIn();
 			boxManagerTestState = BoxManagerTestState.ARM_MOTORS_SUCK_IN;
