@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
@@ -125,7 +126,9 @@ public class Robot extends IterativeRobot {
 	Spark boxMotorGrabberRear1 = new Spark(motor_Box_Grabber_Rear1_int);
 	Spark boxMotorGrabberRear2 = new Spark(motor_Box_Grabber_Rear2_int);
 	DoubleSolenoid armGrabber = new DoubleSolenoid(armDoubleSolenoid[0],armDoubleSolenoid[1]);
-	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber);
+	Solenoid armGrabber1 = new Solenoid(armDoubleSolenoid[0]);
+	Solenoid armGrabber2 = new Solenoid(armDoubleSolenoid[1]);
+	BoxCollector boxCollector = new BoxCollector(boxMotorGrabberL, boxMotorGrabberR, boxMotorGrabberRear1, boxMotorGrabberRear2, armGrabber1, armGrabber2);
 	
 	BoxManager boxManager = new BoxManager(boxCollector, boxLifter, player2);
 	
@@ -170,6 +173,7 @@ public class Robot extends IterativeRobot {
 		c.setClosedLoopControl(true);
 		c.start();
 		
+		boxManager.setBoxLifterModeAutomatic(false);
 		timer.start();
 	}
 
