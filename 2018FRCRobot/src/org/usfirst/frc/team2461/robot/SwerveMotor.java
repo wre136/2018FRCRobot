@@ -33,6 +33,8 @@ public class SwerveMotor
 	private double kITurn = 0.001;
 	private double kDTurn = 0.01;
 	
+	private double pidDrivePower = 0.65;
+	
 	private double testTime;
 	private double timeNow;
 	
@@ -278,7 +280,7 @@ public class SwerveMotor
 	private void setupPIDControllers()
 	{
 		pidDrive = new PIDController(kPDrive, kIDrive, kDDrive, kFDrive, encDrive, motorDrive);
-		pidDrive.setOutputRange(-0.45, 0.45); //Set PID for Drive to output 1/4th power
+		pidDrive.setOutputRange(-pidDrivePower, pidDrivePower); //Set PID for Drive to output restricted power
 		pidDrive.setAbsoluteTolerance(5);
 		
 		pidTurn = new PIDController(kPTurn, kITurn, kDTurn, encTurn, motorTurn);
