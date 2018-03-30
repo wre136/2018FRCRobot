@@ -12,11 +12,35 @@ public class BoxManager
 	private double timeNow;
 	
 	private enum BoxLifterState {
-		BEGIN, IDLE, LOW, MIDDLE, HIGH, LIFTING, LOWERING
+		BEGIN, IDLE, LOW, MIDDLE, HIGH, LIFTING, LOWERING;
+		
+		public String toString() {
+			if(this.ordinal() == 0) {
+				return "BEGIN";
+			} else if(this.ordinal() == 1) {
+				return "IDLE";
+			} else if(this.ordinal() == 2) {
+				return "LOW";
+			} else if(this.ordinal() == 3) {
+				return "MIDDLE";
+			} else if(this.ordinal() == 4) {
+				return "HIGH";
+			} else if(this.ordinal() == 5) {
+				return "LIFTING";
+			} else {
+				return "LOWERING";
+			}
+		}
 	}
 	
 	private BoxLifterState boxLifterStateNow;
 	private BoxLifterState boxLifterStatePrevious;
+	
+	private enum BoxLifterMode {
+		AUTOMATIC, MANUAL
+	}
+	
+	private BoxLifterMode boxLifterMode;
 	
 	private enum BoxCollectorState {
 		BEGIN, REST, SUCK_IN, SPIT_OUT
@@ -299,7 +323,7 @@ public class BoxManager
 	 * </p>
 	 */
 	private void boxLifterLowering() {
-		if(boxLifter.getMode() == BoxLifter.Mode.AUTOMATIC) { // If mode is Automatic
+		if(boxLifterMode == BoxLifterMode.AUTOMATIC) { // If mode is Automatic
 			if(boxLifter.getSwitchMiddle() && boxLifterStatePrevious != BoxLifterState.MIDDLE) {
 				boxLifter.stop();
 				boxLifterStateNow = BoxLifterState.MIDDLE;
@@ -313,6 +337,10 @@ public class BoxManager
 			if(boxLifter.getSwitchLow()) { // If not at the bottom
 				boxLifter.stop();
 				boxLifterStateNow = BoxLifterState.LOW;
+				boxLifterStatePrevious = BoxLifterState.LOWERING;
+			} else if(boxLifter.getSwitchMiddle()) { // If not at the bottom
+				boxLifter.stop();
+				boxLifterStateNow = BoxLifterState.MIDDLE;
 				boxLifterStatePrevious = BoxLifterState.LOWERING;
 			} else { // Turn motor off and set State to Low
 				if(!player.getBumper(Hand.kLeft)) { //If player lets go of the down button
@@ -340,7 +368,7 @@ public class BoxManager
 	 * </p>
 	 */
 	private void boxLifterLifting() {
-		if(boxLifter.getMode() == BoxLifter.Mode.AUTOMATIC) { // if mode is Automatic
+		if(boxLifterMode == BoxLifterMode.AUTOMATIC) { // if mode is Automatic
 			if(boxLifter.getSwitchMiddle() && boxLifterStatePrevious != BoxLifterState.MIDDLE) {
 				boxLifter.stop();
 				boxCollector.armsRetract();
@@ -353,15 +381,19 @@ public class BoxManager
 			}
 		} else { // if mode is Manual
 			if(boxLifter.getSwitchHigh()) { //if not at the Top
+				boxLifter.stop();
+				boxLifterStateNow = BoxLifterState.HIGH;
+				boxLifterStatePrevious = BoxLifterState.LIFTING;
+			} else if(boxLifter.getSwitchMiddle()) {
+				boxLifter.stop();
+				boxLifterStateNow = BoxLifterState.MIDDLE;
+				boxLifterStatePrevious = BoxLifterState.LIFTING;
+			} else { // Turn off motor and set State to High
 				if(!player.getBumper(Hand.kRight)) { // If player lets go of the up button
 					boxLifter.stop(); //Turn motor off
 					boxLifterStateNow = BoxLifterState.IDLE; // Set State to Idle
 					boxLifterStatePrevious = BoxLifterState.LIFTING;
 				}
-			} else { // Turn off motor and set State to High
-				boxLifter.stop();
-				boxLifterStateNow = BoxLifterState.HIGH;
-				boxLifterStatePrevious = BoxLifterState.LIFTING;
 			}
 		}
 	}
@@ -711,6 +743,14 @@ public class BoxManager
 		if(timeNow > testTime) {
 			boxManagerTestState = BoxManagerTestState.DONE;
 			boxManagerTestStatePrevious = BoxManagerTestState.RETRACT;
+		}
+	}
+	
+	public void setBoxLifterModeAutomatic(boolean isAutomatic) {
+		if(isAutomatic==true) {
+			boxLifterMode = BoxLifterMode.AUTOMATIC;
+		} else {
+			boxLifterMode = BoxLifterMode.MANUAL;
 		}
 	}
 }
