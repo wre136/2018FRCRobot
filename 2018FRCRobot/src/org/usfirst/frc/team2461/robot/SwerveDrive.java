@@ -27,7 +27,7 @@ public class SwerveDrive
 	 * Power factor to scale the drive motors by.
 	 * <p>Scale from 0.0 (no power at all) to 1.0 (full power!)</p>
 	 */
-	private double POWER_FACTOR = 0.75;
+	private double POWER_FACTOR = 0.8;
 	
 	/**
 	 * List to hold all commands to be ran in driveAuto() method (Autonomous code)
@@ -96,7 +96,7 @@ public class SwerveDrive
 	    ws[0] = Math.hypot(b, d);
 	    ws[1] = Math.hypot(b, c);
 	    ws[2] = Math.hypot(a, d);
-	    ws[3] = Math.hypot(a, c);
+	    ws[3] = -Math.hypot(a, c);
 	    
 	    // wheel azimuth
 	    double[] wa = new double[4];
