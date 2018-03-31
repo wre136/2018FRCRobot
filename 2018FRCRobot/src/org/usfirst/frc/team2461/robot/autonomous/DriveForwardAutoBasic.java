@@ -89,7 +89,7 @@ public class DriveForwardAutoBasic implements AutoCode
 	@Override
 	public void reset()
 	{
-		
+		setNextState(State.BEGIN);
 	}
 	
 	private void setNextState(State nextState) {
