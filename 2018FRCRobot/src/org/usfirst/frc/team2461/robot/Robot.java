@@ -11,6 +11,7 @@ import java.util.LinkedList;
 
 import org.usfirst.frc.team2461.robot.autonomous.AutoCode;
 import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAuto;
+import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAutoBasic;
 import org.usfirst.frc.team2461.robot.autonomous.MoveLeftAuto;
 import org.usfirst.frc.team2461.robot.autonomous.MoveRightAuto;
 
@@ -18,7 +19,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -200,7 +200,7 @@ public class Robot extends IterativeRobot {
 		
 		switch(m_autoSelected) {
 			case kDefaultAuto:
-				autoCode = new DriveForwardAuto(chassis);
+				autoCode = new DriveForwardAutoBasic(chassis);
 			case LeftAuto:
 				if(plateLayout.charAt(0) == 'L') {
 					autoCode = new MoveRightAuto(chassis, boxManager);
