@@ -9,6 +9,9 @@ public class DriveForwardAutoBasic implements AutoCode
 	private double timeNow;
 	private double timeFuture;
 	
+	/**
+	 * Double value to hold how many seconds to drive the robot forward
+	 */
 	private double timeToDriveForward = 3;
 	
 	private enum State {
@@ -20,17 +23,16 @@ public class DriveForwardAutoBasic implements AutoCode
 		 */
 		@Override
 		public String toString() {
-			String enumName = "";
-			
-			if(this.ordinal() == 0) {
-				enumName = "BEGIN";
-			} else if(this.ordinal() == 1) {
-				enumName = "DRIVE_FORWARD";
-			} else {
-				enumName = "STOP";
+			switch(this) {
+				case BEGIN:
+					return "BEGIN";
+				case DRIVE_FORWARD:
+					return "DRIVE_FORWARD";
+				case STOP:
+					return "STOP";
+				default:
+					return "NULL";
 			}
-			
-			return enumName;
 		}
 	}
 	
