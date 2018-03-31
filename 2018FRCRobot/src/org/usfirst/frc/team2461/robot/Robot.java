@@ -174,6 +174,7 @@ public class Robot extends IterativeRobot {
 		c.start();
 		
 		boxManager.setBoxLifterModeAutomatic(false);
+		motor_RR_Drive.setInverted(true);
 		timer.start();
 	}
 
