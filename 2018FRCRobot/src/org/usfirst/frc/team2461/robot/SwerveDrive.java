@@ -96,7 +96,7 @@ public class SwerveDrive
 	    ws[0] = Math.hypot(b, d);
 	    ws[1] = Math.hypot(b, c);
 	    ws[2] = Math.hypot(a, d);
-	    ws[3] = -Math.hypot(a, c);
+	    ws[3] = Math.hypot(a, c);
 	    
 	    // wheel azimuth
 	    double[] wa = new double[4];
@@ -443,5 +443,11 @@ public class SwerveDrive
 	public void clearAutoCommands() {
 		autoCommands.clear();
 		currentCommand = null;
+	}
+	
+	public void driveManual(double direction, double speed) {
+		for (int i = 0; i < motor.length; i++) {
+	        motor[i].drive(direction, speed*POWER_FACTOR);
+	      }
 	}
 }
