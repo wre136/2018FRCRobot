@@ -201,7 +201,7 @@ public class Robot extends IterativeRobot {
 		
 		switch(m_autoSelected) {
 			case kDefaultAuto:
-				autoCode = new DriveForwardAutoBasic(chassis);
+				autoCode = new DriveForwardAutoBasic(chassis, boxManager);
 				break;
 			case LeftAuto:
 				if(plateLayout.charAt(0) == 'L') {
