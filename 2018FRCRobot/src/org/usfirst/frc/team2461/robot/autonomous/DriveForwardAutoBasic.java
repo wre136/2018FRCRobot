@@ -1,18 +1,20 @@
 package org.usfirst.frc.team2461.robot.autonomous;
 
+import org.usfirst.frc.team2461.robot.BoxManager;
 import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 
 public class DriveForwardAutoBasic implements AutoCode
 {
 	private SwerveDrive chassis;
+	private BoxManager boxManager;
 	private double timeNow;
 	private double timeFuture;
 	
 	/**
 	 * Double value to hold how many seconds to drive the robot forward
 	 */
-	private double timeToDriveForward = 3;
+	private double timeToDriveForward = 1.5;
 	
 	private enum State {
 		BEGIN, DRIVE_FORWARD, STOP;
@@ -39,8 +41,10 @@ public class DriveForwardAutoBasic implements AutoCode
 	private State autoState;
 	private State autoStatePrevious;
 	
-	public DriveForwardAutoBasic(SwerveDrive chassisIn) {
+	public DriveForwardAutoBasic(SwerveDrive chassisIn, BoxManager boxManagerIn) {
 		chassis = chassisIn;
+		boxManager = boxManagerIn;
+		autoState = State.BEGIN;
 	}
 	
 	@Override
@@ -63,7 +67,8 @@ public class DriveForwardAutoBasic implements AutoCode
 	
 	private void begin() {
 		setNextState(State.DRIVE_FORWARD);
-		chassis.driveManual(180, 1);
+		boxManager.boxCollectorArmRetract();
+		chassis.driveManual(0, 1);
 		timeFuture = Robot.timer.get() + timeToDriveForward;
 	}
 	

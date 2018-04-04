@@ -132,7 +132,7 @@ public class BoxManager
 	
 	private void boxCollectorBegin()
 	{
-		boxCollector.armsExtend();
+		boxCollector.armsRetract();
 		boxCollector.setArmMotorsStop();
 		boxCollector.setRearMotorsStop();
 		boxCollectorStateNow = BoxCollectorState.REST;

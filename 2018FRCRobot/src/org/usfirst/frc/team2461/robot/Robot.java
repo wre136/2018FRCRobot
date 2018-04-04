@@ -175,6 +175,7 @@ public class Robot extends IterativeRobot {
 		
 		boxManager.setBoxLifterModeAutomatic(false);
 		motor_RR_Drive.setInverted(true);
+		boxManager.boxCollectorArmRetract();
 		timer.start();
 	}
 
@@ -201,6 +202,7 @@ public class Robot extends IterativeRobot {
 		switch(m_autoSelected) {
 			case kDefaultAuto:
 				autoCode = new DriveForwardAutoBasic(chassis);
+				break;
 			case LeftAuto:
 				if(plateLayout.charAt(0) == 'L') {
 					autoCode = new MoveRightAuto(chassis, boxManager);
@@ -301,19 +303,19 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("RRWheel Error", chassis.getPIDTurnErrors()[3]);
 //		
 //		SmartDashboard.putNumber("FLWheel Power", chassis.getDriveSpeed()[0]);
-//		SmartDashboard.putNumber("FRWheel Power", chassis.getDriveSpeed()[1]);
+		SmartDashboard.putNumber("FRWheel Power", chassis.getDriveSpeed()[1]);
 //		SmartDashboard.putNumber("RLWheel Power", chassis.getDriveSpeed()[2]);
-//		SmartDashboard.putNumber("RRWheel Power", chassis.getDriveSpeed()[3]);
+		SmartDashboard.putNumber("RRWheel Power", chassis.getDriveSpeed()[3]);
 //		
 //		SmartDashboard.putNumber("FLWheel Distance Traveled", chassis.getDistance()[0]);
-//		SmartDashboard.putNumber("FRWheel Distance Traveled", chassis.getDistance()[1]);
+		SmartDashboard.putNumber("FRWheel Distance Traveled", chassis.getDistance()[1]);
 //		SmartDashboard.putNumber("RLWheel Distance Traveled", chassis.getDistance()[2]);
-//		SmartDashboard.putNumber("RRWheel Distance Traveled", chassis.getDistance()[3]);
+		SmartDashboard.putNumber("RRWheel Distance Traveled", chassis.getDistance()[3]);
 //		
 //		SmartDashboard.putNumber("FLWheel Distance Setpoint", chassis.getDistanceSetpoints()[0]);
 //		SmartDashboard.putNumber("FRWheel Distance Setpoint", chassis.getDistanceSetpoints()[1]);
 //		SmartDashboard.putNumber("RLWheel Distance Setpoint", chassis.getDistanceSetpoints()[2]);
-//		SmartDashboard.putNumber("RRWheel Distance Setpoint", chassis.getDistanceSetpoints()[3]);
+		SmartDashboard.putNumber("RRWheel Distance Setpoint", chassis.getDistanceSetpoints()[3]);
 //		
 //		SmartDashboard.putNumber("Speed", chassis.getDriveSpeed()[0]);
 //		SmartDashboard.putNumber("Command Direction", chassis.getCurrentCommand()[0]);
