@@ -7,7 +7,7 @@ import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
 public class DriveForwardAuto implements AutoCode
 {
 	private enum State {
-		BEGIN, DRIVE_FORWARD, STOP
+		BEGIN, DRIVE_FORWARD, DRIVE_LEFT, DRIVE_TO_LINE, STOP
 	}
 	
 	private State autoState;
@@ -15,6 +15,8 @@ public class DriveForwardAuto implements AutoCode
 	private SwerveDrive chassis;
 	private SwerveDriveAutoCommandFactory factory = SwerveDriveAutoCommandFactory.getInstance();
 	
+	private double distanceDriveForward = 24; //set to 60inches for testing purposes
+	private double distanceDriveToSide = 60;
 	private double autoLineDistance = 120; //set to 60inches for testing purposes
 	private double timeFuture;
 	
@@ -32,12 +34,17 @@ public class DriveForwardAuto implements AutoCode
 			case DRIVE_FORWARD:
 				driveForward();
 				break;
+			case DRIVE_LEFT:
+				driveLeft();
+				break;
+			case DRIVE_TO_LINE:
+				driveToLine();
+				break;
 			case STOP:
 				stop();
 				break;
 			default:
-				break;
-			
+				break;	
 		}
 	}
 	
@@ -53,10 +60,9 @@ public class DriveForwardAuto implements AutoCode
 	@SuppressWarnings("static-access")
 	private void begin() {
 		chassis.clearAutoCommands();
-		chassis.addAutoCommand(factory.command_GoForward(autoLineDistance));
+		chassis.addAutoCommand(factory.command_GoForward(distanceDriveForward));
 		chassis.driveAuto();
-		autoState = State.DRIVE_FORWARD;
-		autoStatePrevious = State.BEGIN;
+		setNextState(State.DRIVE_FORWARD);
 		timeFuture = Robot.timer.get() + 0.1;
 	}
 	
@@ -65,7 +71,7 @@ public class DriveForwardAuto implements AutoCode
 	 * <p>
 	 * Once future time has passed, it will check to see if all wheels have traveled
 	 * the distance they needed to and have stopped. If they have, move the state 
-	 * to STOP, change previous state to DRIVE_FORWARD and add a new command to stop
+	 * to DRIVE_LEFT, change previous state to DRIVE_FORWARD and add a new command to stop
 	 * to the drive train.
 	 * </p>
 	 */
@@ -73,8 +79,49 @@ public class DriveForwardAuto implements AutoCode
 	private void driveForward() {
 		if(Robot.timer.get() > timeFuture) { // Adding Delay to make sure autoCommand takes effect before checking
 			if(!chassis.isDone()) {
-				autoState = State.STOP;
-				autoStatePrevious = State.DRIVE_FORWARD;
+				setNextState(State.DRIVE_LEFT);
+				chassis.addAutoCommand(factory.command_MoveLeft(distanceDriveToSide));
+				chassis.driveAuto();
+				timeFuture = Robot.timer.get() + 0.1;
+			}
+		}
+	}
+	
+	/**
+	 * Method for the DRIVE_LEFT State of the Drive Forward Auto Code state machine.
+	 * <p>
+	 * Once future time has passed, it will check to see if all wheels have traveled
+	 * the distance they needed to and have stopped. If they have, move the state 
+	 * to DRIVE_TO_LINE, change previous state to DRIVE_LEFT and add a new command to stop
+	 * to the drive train.
+	 * </p>
+	 */
+	@SuppressWarnings("static-access")
+	private void driveLeft() {
+		if(Robot.timer.get() > timeFuture) { // Adding Delay to make sure autoCommand takes effect before checking
+			if(!chassis.isDone()) {
+				setNextState(State.DRIVE_TO_LINE);
+				chassis.addAutoCommand(factory.command_GoForward(autoLineDistance));
+				chassis.driveAuto();
+				timeFuture = Robot.timer.get() + 0.1;
+			}
+		}
+	}
+	
+	/**
+	 * Method for the DRIVE_TO_LINE State of the Drive Forward Auto Code state machine.
+	 * <p>
+	 * Once future time has passed, it will check to see if all wheels have traveled
+	 * the distance they needed to and have stopped. If they have, move the state 
+	 * to STOP, change previous state to DRIVE_TO_LINE and add a new command to stop
+	 * to the drive train.
+	 * </p>
+	 */
+	@SuppressWarnings("static-access")
+	private void driveToLine() {
+		if(Robot.timer.get() > timeFuture) { // Adding Delay to make sure autoCommand takes effect before checking
+			if(!chassis.isDone()) {
+				setNextState(State.STOP);
 				chassis.addAutoCommand(factory.command_Stop());
 			}
 		}
@@ -97,16 +144,7 @@ public class DriveForwardAuto implements AutoCode
 	@Override
 	public String getStateString()
 	{
-		switch(autoState) {
-			case BEGIN:
-				return "BEGIN";
-			case DRIVE_FORWARD:
-				return "DRIVING_FORWARD";
-			case STOP:
-				return "STOPPED";
-			default:
-				return "NULL";			
-		}
+		return autoState.name();
 	}
 	
 	/**
@@ -116,16 +154,7 @@ public class DriveForwardAuto implements AutoCode
 	@Override
 	public String getStatePreviousString()
 	{
-		switch(autoStatePrevious) {
-			case BEGIN:
-				return "BEGIN";
-			case DRIVE_FORWARD:
-				return "DRIVING_FORWARD";
-			case STOP:
-				return "STOPPED";
-			default:
-				return "NULL";			
-		}
+		return autoStatePrevious.name();
 	}
 	
 	/**
@@ -136,5 +165,10 @@ public class DriveForwardAuto implements AutoCode
 		chassis.reset();
 		chassis.clearAutoCommands();
 		autoState = State.BEGIN;
+	}
+	
+	private void setNextState(State nextState) {
+		autoStatePrevious = autoState;
+		autoState = nextState;
 	}
 }

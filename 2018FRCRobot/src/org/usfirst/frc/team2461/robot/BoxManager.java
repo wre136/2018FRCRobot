@@ -12,25 +12,7 @@ public class BoxManager
 	private double timeNow;
 	
 	private enum BoxLifterState {
-		BEGIN, IDLE, LOW, MIDDLE, HIGH, LIFTING, LOWERING;
-		
-		public String toString() {
-			if(this.ordinal() == 0) {
-				return "BEGIN";
-			} else if(this.ordinal() == 1) {
-				return "IDLE";
-			} else if(this.ordinal() == 2) {
-				return "LOW";
-			} else if(this.ordinal() == 3) {
-				return "MIDDLE";
-			} else if(this.ordinal() == 4) {
-				return "HIGH";
-			} else if(this.ordinal() == 5) {
-				return "LIFTING";
-			} else {
-				return "LOWERING";
-			}
-		}
+		BEGIN, IDLE, LOW, MIDDLE, HIGH, LIFTING, LOWERING
 	}
 	
 	private BoxLifterState boxLifterStateNow;
@@ -469,18 +451,7 @@ public class BoxManager
 	 * @return Current state of the Box Collector state machine as a String object
 	 */
 	public String getBoxCollectorStateString() {
-		switch(boxCollectorStateNow) {
-			case BEGIN:
-				return "BEGIN";
-			case REST:
-				return "REST";
-			case SPIT_OUT:
-				return "SPIT_OUT";
-			case SUCK_IN:
-				return "SUCK_IN";
-			default:
-				return "NULL";
-		}
+		return boxCollectorStateNow.name();
 	}
 	
 	/**
@@ -488,18 +459,7 @@ public class BoxManager
 	 * @return Previous state of the Box Collector state machine as a String object
 	 */
 	public String getBoxCollectorStatePreviousString() {
-		switch(boxCollectorStatePrevious) {
-			case BEGIN:
-				return "BEGIN";
-			case REST:
-				return "REST";
-			case SPIT_OUT:
-				return "SPIT_OUT";
-			case SUCK_IN:
-				return "SUCK_IN";
-			default:
-				return "NULL";
-		}
+		return boxCollectorStatePrevious.name();
 	}
 	
 	/**
@@ -507,24 +467,7 @@ public class BoxManager
 	 * @return Current state of the Box Lifter state machine as a String object
 	 */
 	public String getBoxLifterStateString() {
-		switch(boxLifterStateNow) {
-			case BEGIN:
-				return "BEGIN";
-			case HIGH:
-				return "HIGH";
-			case IDLE:
-				return "IDLE";
-			case LIFTING:
-				return "LIFTING";
-			case LOW:
-				return "LOW";
-			case LOWERING:
-				return "LOWERING";
-			case MIDDLE:
-				return "MIDDLE";
-			default:
-				return "NULL";
-		}
+		return boxLifterStateNow.name();
 	}
 	
 	/**
@@ -532,24 +475,7 @@ public class BoxManager
 	 * @return Previous state of the Box Lifter state machine as a String object
 	 */
 	public String getBoxLifterStatePreviousString() {
-		switch(boxLifterStatePrevious) {
-			case BEGIN:
-				return "BEGIN";
-			case HIGH:
-				return "HIGH";
-			case IDLE:
-				return "IDLE";
-			case LIFTING:
-				return "LIFTING";
-			case LOW:
-				return "LOW";
-			case LOWERING:
-				return "LOWERING";
-			case MIDDLE:
-				return "MIDDLE";
-			default:
-				return "NULL";
-		}
+		return boxLifterStatePrevious.name();
 	}
 	
 	/**
