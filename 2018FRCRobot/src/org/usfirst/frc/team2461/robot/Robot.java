@@ -295,6 +295,8 @@ public class Robot extends IterativeRobot {
 //		boxManager.debug(0);
 //		boxManager.debug(1);
 //		boxManager.debug(2);
+		
+//		autoCode.debug();
 	}
 	
 	@Override
