@@ -49,11 +49,16 @@ public class BoxManager
 	public BoxManager(BoxCollector boxCollectorIn, BoxLifter boxLifterIn, MetalSkinsController playerIn) {
 		boxCollector = boxCollectorIn;
 		boxCollectorStateNow = BoxCollectorState.BEGIN;
+		boxCollectorStatePrevious = BoxCollectorState.BEGIN;
 		
 		boxLifter = boxLifterIn;
 		boxLifterStateNow = BoxLifterState.BEGIN;
+		boxLifterStatePrevious = BoxLifterState.BEGIN;
 		boxLifterMode = BoxLifterMode.AUTOMATIC;
 		player = playerIn;
+		
+		boxManagerTestState = BoxManagerTestState.BEGIN;
+		boxManagerTestStatePrevious = BoxManagerTestState.BEGIN;
 	}
 	
 	/**
