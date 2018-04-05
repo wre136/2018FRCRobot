@@ -28,4 +28,6 @@ public interface AutoCode
 	 * states
 	 */
 	public void reset();
+	
+	public void debug();
 }
