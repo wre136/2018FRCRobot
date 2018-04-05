@@ -3,6 +3,8 @@ package org.usfirst.frc.team2461.robot.autonomous;
 import org.usfirst.frc.team2461.robot.BoxManager;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * <h1> MoveRightAuto Class</h1>
  * @author William R Edds FRC 2461 - The METAL-SKINs
@@ -47,4 +49,8 @@ public class MoveRightAuto extends MoveAuto
 		return "Driving State: Moving Right";
 	}
 
+	public void debug() {
+		SmartDashboard.putString("MoveRightAuto State", getStateString());
+		SmartDashboard.putString("MoveRightAuto State Previous", getStatePreviousString());
+	}
 }

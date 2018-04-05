@@ -4,6 +4,8 @@ import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 import org.usfirst.frc.team2461.robot.SwerveDriveAutoCommandFactory;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriveForwardAuto implements AutoCode
 {
 	private enum State {
@@ -171,5 +173,10 @@ public class DriveForwardAuto implements AutoCode
 	private void setNextState(State nextState) {
 		autoStatePrevious = autoState;
 		autoState = nextState;
+	}
+	
+	public void debug() {
+		SmartDashboard.putString("DriveForwardAuto State", getStateString());
+		SmartDashboard.putString("DriveForwardAuto State Previous", getStatePreviousString());
 	}
 }

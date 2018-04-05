@@ -4,6 +4,8 @@ import org.usfirst.frc.team2461.robot.BoxManager;
 import org.usfirst.frc.team2461.robot.Robot;
 import org.usfirst.frc.team2461.robot.SwerveDrive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriveForwardAutoBasic implements AutoCode
 {
 	private SwerveDrive chassis;
@@ -103,5 +105,9 @@ public class DriveForwardAutoBasic implements AutoCode
 		autoStatePrevious = autoState;
 		autoState = nextState;
 	}
-
+	
+	public void debug() {
+		SmartDashboard.putString("DriveForwardAutoBasic State", getStateString());
+		SmartDashboard.putString("DriveForwardAutoBasic State Previous", getStatePreviousString());
+	}
 }
