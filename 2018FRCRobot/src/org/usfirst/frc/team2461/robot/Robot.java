@@ -207,7 +207,7 @@ public class Robot extends IterativeRobot {
 				if(plateLayout.charAt(0) == 'L') {
 					autoCode = new MoveRightAuto(chassis, boxManager);
 				} else {
-					autoCode = new DriveForwardAuto(chassis);
+					autoCode = new DriveForwardAutoBasic(chassis, boxManager);
 				}
 				break;
 			case CenterAuto:
@@ -223,7 +223,7 @@ public class Robot extends IterativeRobot {
 				if(plateLayout.charAt(0) == 'R') {
 					autoCode = new MoveLeftAuto(chassis, boxManager);
 				} else {
-					autoCode = new DriveForwardAuto(chassis);
+					autoCode = new DriveForwardAutoBasic(chassis, boxManager);
 				}
 				break;
 			default:
