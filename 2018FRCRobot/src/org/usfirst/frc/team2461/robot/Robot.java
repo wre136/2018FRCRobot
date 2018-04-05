@@ -287,72 +287,14 @@ public class Robot extends IterativeRobot {
 	
 	public void printDataToScreen()
 	{
-		SmartDashboard.putNumber("FLWheel Angle", chassis.getTurnEncoderAngles()[0]);
-		SmartDashboard.putNumber("FRWheel Angle", chassis.getTurnEncoderAngles()[1]);
-		SmartDashboard.putNumber("RLWheel Angle", chassis.getTurnEncoderAngles()[2]);
-		SmartDashboard.putNumber("RRWheel Angle", chassis.getTurnEncoderAngles()[3]);
-		
-		SmartDashboard.putNumber("FLWheel Angle Setpoint", chassis.getTurnEncoderSetpoints()[0]);
-		SmartDashboard.putNumber("FRWheel Angle Setpoint", chassis.getTurnEncoderSetpoints()[1]);
-		SmartDashboard.putNumber("RLWheel Angle Setpoint", chassis.getTurnEncoderSetpoints()[2]);
-		SmartDashboard.putNumber("RRWheel Angle Setpoint", chassis.getTurnEncoderSetpoints()[3]);
-		
-		SmartDashboard.putNumber("FLWheel Error", chassis.getPIDTurnErrors()[0]);
-		SmartDashboard.putNumber("FRWheel Error", chassis.getPIDTurnErrors()[1]);
-		SmartDashboard.putNumber("RLWheel Error", chassis.getPIDTurnErrors()[2]);
-		SmartDashboard.putNumber("RRWheel Error", chassis.getPIDTurnErrors()[3]);
+//		chassis.debugWheel(0);
+//		chassis.debugWheel(1);
+//		chassis.debugWheel(2);
+//		chassis.debugWheel(3);
 //		
-//		SmartDashboard.putNumber("FLWheel Power", chassis.getDriveSpeed()[0]);
-		SmartDashboard.putNumber("FRWheel Power", chassis.getDriveSpeed()[1]);
-//		SmartDashboard.putNumber("RLWheel Power", chassis.getDriveSpeed()[2]);
-		SmartDashboard.putNumber("RRWheel Power", chassis.getDriveSpeed()[3]);
-//		
-//		SmartDashboard.putNumber("FLWheel Distance Traveled", chassis.getDistance()[0]);
-		SmartDashboard.putNumber("FRWheel Distance Traveled", chassis.getDistance()[1]);
-//		SmartDashboard.putNumber("RLWheel Distance Traveled", chassis.getDistance()[2]);
-		SmartDashboard.putNumber("RRWheel Distance Traveled", chassis.getDistance()[3]);
-//		
-//		SmartDashboard.putNumber("FLWheel Distance Setpoint", chassis.getDistanceSetpoints()[0]);
-//		SmartDashboard.putNumber("FRWheel Distance Setpoint", chassis.getDistanceSetpoints()[1]);
-//		SmartDashboard.putNumber("RLWheel Distance Setpoint", chassis.getDistanceSetpoints()[2]);
-		SmartDashboard.putNumber("RRWheel Distance Setpoint", chassis.getDistanceSetpoints()[3]);
-//		
-//		SmartDashboard.putNumber("Speed", chassis.getDriveSpeed()[0]);
-//		SmartDashboard.putNumber("Command Direction", chassis.getCurrentCommand()[0]);
-//		SmartDashboard.putNumber("Command Distance", chassis.getCurrentCommand()[1]);
-		SmartDashboard.putData(chassis.getTurnPID(0));
-		SmartDashboard.putData(chassis.getTurnPID(1));
-		SmartDashboard.putData(chassis.getTurnPID(2));
-		SmartDashboard.putData(chassis.getTurnPID(3));
-//		
-//		SmartDashboard.putData(chassis.getDrivePID(0));
-//		SmartDashboard.putData(chassis.getDrivePID(1));
-//		SmartDashboard.putData(chassis.getDrivePID(2));
-//		SmartDashboard.putData(chassis.getDrivePID(3));
-//		
-//		SmartDashboard.putString("Box Collector State", boxManager.getBoxCollectorStateString());
-//		SmartDashboard.putString("Box Lifter State", boxManager.getBoxLifterStateString());
-//		SmartDashboard.putString("Robot Lifter State", robotLift.getStateString());
-//		if(autoCode != null) {
-//			SmartDashboard.putString("Auto State", autoCode.getStateString());
-//			SmartDashboard.putString("Auto State Previous", autoCode.getStatePreviousString());
-//		}
-//		
-//		LinkedList<SwerveDriveAutoCommand> list = chassis.getAutoCommandList();
-//		if(list != null) {
-//			String autoCommandList = "";
-//			for(SwerveDriveAutoCommand i: list) {
-//				autoCommandList += i.toString() + "\n";
-//				
-//			}
-//			SmartDashboard.putString("AutoCommands", autoCommandList);
-//		}
-//		
-//		SmartDashboard.putBoolean("Chassis Done", chassis.isDone());
-//		
-//		SmartDashboard.putBoolean("Box Lifter High Switch", boxLifter.getSwitchHigh());
-//		SmartDashboard.putBoolean("Box Lifter Middle Switch", boxLifter.getSwitchMiddle());
-//		SmartDashboard.putBoolean("Box Lifter Low Switch", boxLifter.getSwitchLow());
+//		boxManager.debug(0);
+//		boxManager.debug(1);
+//		boxManager.debug(2);
 	}
 	
 	@Override
