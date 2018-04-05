@@ -2,6 +2,7 @@ package org.usfirst.frc.team2461.robot;
 
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BoxManager
 {
@@ -688,6 +689,27 @@ public class BoxManager
 			boxLifterMode = BoxLifterMode.AUTOMATIC;
 		} else {
 			boxLifterMode = BoxLifterMode.MANUAL;
+		}
+	}
+	
+	/**
+	 * Writes information about a Box Manager to the SmartDashboard for review and
+	 * troubleshooting
+	 * @param item Item to debug. <ul><li>0 = Box Collector</li><li>1 = Box Lifter</li><li>2 = Box Manager Test State</li></ul>
+	 */
+	public void debug(int item) {
+		if(item == 0) {
+			SmartDashboard.putString("Box Collector State", getBoxCollectorStateString());
+			SmartDashboard.putString("Box Collector Previous State", getBoxCollectorStatePreviousString());
+		} else if(item == 1) {
+			SmartDashboard.putString("Box Lifter State", getBoxLifterStateString());
+			SmartDashboard.putString("Box Lifter Previous State", getBoxLifterStatePreviousString());
+			SmartDashboard.putBoolean("Box Lifter High Switch", boxLifter.getSwitchHigh());
+			SmartDashboard.putBoolean("Box Lifter Middle Switch", boxLifter.getSwitchMiddle());
+			SmartDashboard.putBoolean("Box Lifter Low Switch", boxLifter.getSwitchLow());
+		} else if(item == 2) {
+			SmartDashboard.putString("Box Manager Test State", boxManagerTestState.name());
+			SmartDashboard.putString("Box Manager Test Previous State", boxManagerTestStatePrevious.name());
 		}
 	}
 }

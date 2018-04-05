@@ -3,6 +3,7 @@ package org.usfirst.frc.team2461.robot;
 import java.util.LinkedList;
 
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * <h1> Swerve Drive Class </h1>
@@ -449,5 +450,21 @@ public class SwerveDrive
 		for (int i = 0; i < motor.length; i++) {
 	        motor[i].drive(direction, (speed*POWER_FACTOR));
 	      }
+	}
+	
+	/**
+	 * Writes information about a wheel to the SmartDashboard for review and
+	 * troubleshooting
+	 * @param wheel Number of wheel. <ul><li>0 = FL</li><li>1 = FR</li><li>2 = RL</li><li>3 = RR</li></ul>
+	 */
+	public void debugWheel(int wheel) {
+		SmartDashboard.putNumber(motor[wheel].getWheelPosition() + " Angle", getTurnEncoderAngles()[wheel]);
+		SmartDashboard.putNumber(motor[wheel].getWheelPosition() + " Angle Setpoint", getTurnEncoderSetpoints()[wheel]);
+		SmartDashboard.putNumber(motor[wheel].getWheelPosition() + " Error", getPIDTurnErrors()[wheel]);
+		SmartDashboard.putNumber(motor[wheel].getWheelPosition() + " Power", getDriveSpeed()[wheel]);
+		SmartDashboard.putNumber(motor[wheel].getWheelPosition() + " Distance Traveled", getDistance()[wheel]);
+		SmartDashboard.putNumber(motor[wheel].getWheelPosition() + " Distance Setpoint", getDistanceSetpoints()[wheel]);
+		SmartDashboard.putData(getTurnPID(wheel));
+		SmartDashboard.putData(getDrivePID(wheel));
 	}
 }
