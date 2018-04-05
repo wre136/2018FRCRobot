@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * <h1> Swerve Motor Class </h1>
@@ -37,6 +38,12 @@ public class SwerveMotor
 	
 	private double testTime;
 	private double timeNow;
+	
+	private enum WheelPosition {
+		FLWheel, FRWheel, RLWheel, RRWheel
+	}
+	
+	protected WheelPosition wheelPosition;
 	
 	private enum TestState {
 		BEGIN, DRIVE_TEST, TURN_TEST, END
@@ -643,5 +650,13 @@ public class SwerveMotor
 	 */
 	public boolean getDriveOntarget() {
 		return pidDrive.onTarget() && encDrive.getStopped() && pidDrive.isEnabled();
+	}
+	
+	public void setWheelPositionEnum(WheelPosition wheelPositionIn) {
+		wheelPosition = wheelPositionIn;
+	}
+	
+	public String getWheelPosition() {
+		return wheelPosition.name();
 	}
 }
