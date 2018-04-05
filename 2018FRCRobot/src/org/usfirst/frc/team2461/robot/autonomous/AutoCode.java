@@ -29,5 +29,9 @@ public interface AutoCode
 	 */
 	public void reset();
 	
+	/**
+	 * Prints the current state of the Autonomous Code and its previous
+	 * state to the SmartDashboard
+	 */
 	public void debug();
 }

@@ -49,6 +49,11 @@ public class MoveRightAuto extends MoveAuto
 		return "Driving State: Moving Right";
 	}
 
+	/**
+	 * Prints the current state of the Autonomous Code and its previous
+	 * state to the SmartDashboard
+	 */
+	@Override
 	public void debug() {
 		SmartDashboard.putString("MoveRightAuto State", getStateString());
 		SmartDashboard.putString("MoveRightAuto State Previous", getStatePreviousString());

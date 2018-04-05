@@ -106,6 +106,11 @@ public class DriveForwardAutoBasic implements AutoCode
 		autoState = nextState;
 	}
 	
+	/**
+	 * Prints the current state of the Autonomous Code and its previous
+	 * state to the SmartDashboard
+	 */
+	@Override
 	public void debug() {
 		SmartDashboard.putString("DriveForwardAutoBasic State", getStateString());
 		SmartDashboard.putString("DriveForwardAutoBasic State Previous", getStatePreviousString());

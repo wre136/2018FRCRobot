@@ -164,6 +164,7 @@ public class DriveForwardAuto implements AutoCode
 	 * Disables all PID Loops of the drive train, clears all autoCommands 
 	 * and sets the Drive Forward Auto Code state to BEGIN
 	 */
+	@Override
 	public void reset() {
 		chassis.reset();
 		chassis.clearAutoCommands();
@@ -175,6 +176,11 @@ public class DriveForwardAuto implements AutoCode
 		autoState = nextState;
 	}
 	
+	/**
+	 * Prints the current state of the Autonomous Code and its previous
+	 * state to the SmartDashboard
+	 */
+	@Override
 	public void debug() {
 		SmartDashboard.putString("DriveForwardAuto State", getStateString());
 		SmartDashboard.putString("DriveForwardAuto State Previous", getStatePreviousString());
