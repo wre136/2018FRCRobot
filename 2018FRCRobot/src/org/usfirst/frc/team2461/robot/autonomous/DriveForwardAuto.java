@@ -24,6 +24,7 @@ public class DriveForwardAuto implements AutoCode
 	{
 		chassis = driveTrain;
 		autoState = State.BEGIN;
+		autoStatePrevious = State.BEGIN;
 	}
 	
 	public void run() {
