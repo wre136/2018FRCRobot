@@ -16,7 +16,7 @@ public class DriveForwardAutoBasic implements AutoCode
 	/**
 	 * Double value to hold how many seconds to drive the robot forward
 	 */
-	private double timeToDriveForward = 1.5;
+	private double timeToDriveForward = 2;
 	
 	private enum State {
 		BEGIN, DRIVE_FORWARD, STOP;
