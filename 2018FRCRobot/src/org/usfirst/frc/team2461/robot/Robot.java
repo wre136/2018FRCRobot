@@ -17,6 +17,7 @@ import org.usfirst.frc.team2461.robot.autonomous.MoveRightAuto;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -136,6 +137,8 @@ public class Robot extends IterativeRobot {
 	Talon lifterMotor2 = new Talon(motor_Robot_Lifter_2_int);
 	RobotLift robotLift = new RobotLift(lifterMotor1, lifterMotor2, player2);
 	
+	CameraServer camServer = CameraServer.getInstance();
+	
 	public static Timer timer = new Timer();
 	
 	/**
@@ -177,6 +180,7 @@ public class Robot extends IterativeRobot {
 		motor_RR_Drive.setInverted(true);
 		boxManager.boxCollectorArmRetract();
 		timer.start();
+		camServer.startAutomaticCapture();
 	}
 
 	/**
