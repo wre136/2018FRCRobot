@@ -33,10 +33,11 @@ public class BoxManager
 	BoxCollectorState boxCollectorStatePrevious;
 	
 	private enum BoxCollectorArmsState {
-		RETRACTED, DEPLOYED
+		BEGIN, REST, RETRACTED, DEPLOYED
 	}
 	
 	BoxCollectorArmsState boxCollectorArmsState;
+	private boolean armToggleLock = false;
 	
 	private enum BoxManagerTestState {
 		BEGIN, EXTEND_ARM, LOWER_TO_LOW, RAISE_TO_HIGH, LOWER_TO_MID, ARM_MOTORS_SUCK_IN, ARM_MOTOTS_SPIT_OUT,
@@ -119,6 +120,18 @@ public class BoxManager
 			default:
 				break;
 		}
+		
+		if(boxLifterMode == BoxLifterMode.MANUAL && player.getAButton() && !armToggleLock) {
+			armToggleLock = true;
+			if(boxCollector.getArmsExtended()) {
+				boxCollector.armsExtend();
+			} else {
+				boxCollector.armsRetract();
+			}
+		} else {
+			armToggleLock = false;
+		}
+		
 	}
 	
 	private void boxCollectorBegin()
@@ -177,14 +190,6 @@ public class BoxManager
 		} else if(player.getTriggerAxis(Hand.kLeft) == 1) {
 			spitBoxOut();
 			boxCollectorStateNow = BoxCollectorState.SPIT_OUT;
-			boxCollectorStatePrevious = BoxCollectorState.REST;
-		} else if(boxLifterMode == BoxLifterMode.MANUAL && player.getAButton()) {
-			if(boxCollector.getArmsExtended()) {
-				boxCollector.armsExtend();
-			} else {
-				boxCollector.armsRetract();
-			}
-			boxCollectorStateNow = BoxCollectorState.TOGGLE_ARMS;
 			boxCollectorStatePrevious = BoxCollectorState.REST;
 		}
 	}
