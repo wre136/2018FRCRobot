@@ -68,6 +68,7 @@ public class SwerveMotor
 		encTurn = encTurnIn;
 		configureEncoders();
 		setupPIDControllers();
+		configDriveMotor();
 	}
 	
 	/**
@@ -88,6 +89,7 @@ public class SwerveMotor
 		encTurn = encTurnIn;
 		configureEncoders();
 		setupPIDControllers();
+		configDriveMotor();
 	}
 	
 	/**
@@ -106,7 +108,8 @@ public class SwerveMotor
 		motorTurn = new Spark (turnPWMChannel);
 		encTurn = new MA3Encoder(encTurnAIChannel);
 		configureEncoders();
-		setupPIDControllers();		
+		setupPIDControllers();
+		configDriveMotor();
 	}
 	
 	/**
@@ -128,6 +131,7 @@ public class SwerveMotor
 		encTurn = new MA3Encoder(encTurnAIChannel);
 		configureEncoders();
 		setupPIDControllers();
+		configDriveMotor();
 	}
 	
 	/**
@@ -148,6 +152,7 @@ public class SwerveMotor
 		encTurn = encTurnIn;
 		configureEncoders();
 		setupPIDControllers();
+		configDriveMotor();
 	}
 	
 	/**
@@ -168,6 +173,7 @@ public class SwerveMotor
 		encTurn = encTurnIn;
 		configureEncoders();
 		setupPIDControllers();
+		configDriveMotor();
 	}
 	
 	//Accessors
@@ -658,5 +664,12 @@ public class SwerveMotor
 	
 	public String getWheelPosition() {
 		return wheelPosition.name();
+	}
+	
+	private void configDriveMotor() {
+		motorDrive.configOpenloopRamp(0.25, 0);
+		motorDrive.configPeakCurrentLimit(40, 0);
+		motorDrive.configContinuousCurrentLimit(40, 0);
+		motorDrive.enableCurrentLimit(true);
 	}
 }
