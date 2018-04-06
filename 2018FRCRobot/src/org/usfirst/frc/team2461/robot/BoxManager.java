@@ -26,7 +26,7 @@ public class BoxManager
 	private BoxLifterMode boxLifterMode;
 	
 	private enum BoxCollectorState {
-		BEGIN, REST, SUCK_IN, SPIT_OUT, TOGGLE_ARMS
+		BEGIN, REST, SUCK_IN, SPIT_OUT, SPIN_BOX, TOGGLE_ARMS
 	}
 	
 	BoxCollectorState boxCollectorStateNow;
@@ -83,6 +83,9 @@ public class BoxManager
 				break;
 			case SUCK_IN:
 				boxCollectorSuckIn();
+				break;
+			case SPIN_BOX:
+				boxCollectorSpinBox();
 				break;
 			case TOGGLE_ARMS:
 				boxCollectorToggleArms();
@@ -164,7 +167,9 @@ public class BoxManager
 	 */
 	private void boxCollectorRest() {
 		if(player.getTriggerAxis(Hand.kRight) == 1 && player.getTriggerAxis(Hand.kLeft) == 1) {
-			return;
+			spinBox();
+			boxCollectorStateNow = BoxCollectorState.SPIN_BOX;
+			boxCollectorStatePrevious = BoxCollectorState.REST;
 		} else if(player.getTriggerAxis(Hand.kRight) == 1) {
 			suckBoxIn();
 			boxCollectorStateNow = BoxCollectorState.SUCK_IN;
@@ -224,6 +229,16 @@ public class BoxManager
 		}
 	}
 	
+	private void boxCollectorSpinBox() {
+		if(player.getTriggerAxis(Hand.kLeft) == 1 && player.getTriggerAxis(Hand.kRight) == 1) {
+			return;
+		} else {
+			stopBoxSucker();
+			boxCollectorStateNow = BoxCollectorState.REST;
+			boxCollectorStatePrevious = BoxCollectorState.SPIN_BOX;
+		}
+	}
+	
 	/**
 	 * Method to spit a box out of the Box Collector.
 	 * <p>
@@ -255,6 +270,14 @@ public class BoxManager
 		}
 		
 		boxCollector.setRearMotorsSuckIn();
+	}
+	
+	public void spinBox() {
+		if(boxLifter.getSwitchLow()) {
+			boxCollector.setArmMotorsSpinBox();
+		}
+		
+		boxCollector.setRearMotorsSpinBox();
 	}
 	
 	/**
