@@ -88,6 +88,11 @@ public class BoxCollector
 		motorIntakeArmRight.set(-1);
 	}
 	
+	public void setArmMotorsSpinBox() {
+		motorIntakeArmLeft.set(1);
+		motorIntakeArmRight.set(-1);
+	}
+	
 	public void setArmMotorsStop() {
 		motorIntakeArmLeft.set(0);
 		motorIntakeArmRight.set(0);
@@ -100,6 +105,11 @@ public class BoxCollector
 	
 	public void setRearMotorsSpitOut() {
 		motorIntakeRearLeft.set(1);
+		motorIntakeRearRight.set(1);
+	}
+	
+	public void setRearMotorsSpinBox() {
+		motorIntakeRearLeft.set(-1);
 		motorIntakeRearRight.set(1);
 	}
 	
