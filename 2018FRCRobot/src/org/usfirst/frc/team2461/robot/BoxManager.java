@@ -29,14 +29,9 @@ public class BoxManager
 		BEGIN, REST, SUCK_IN, SPIT_OUT, SPIN_BOX, TOGGLE_ARMS
 	}
 	
-	BoxCollectorState boxCollectorStateNow;
-	BoxCollectorState boxCollectorStatePrevious;
-	
-	private enum BoxCollectorArmsState {
-		BEGIN, REST, RETRACTED, DEPLOYED
-	}
-	
-	BoxCollectorArmsState boxCollectorArmsState;
+	private BoxCollectorState boxCollectorStateNow;
+	private BoxCollectorState boxCollectorStatePrevious;
+
 	private boolean armToggleLock = false;
 	
 	private enum BoxManagerTestState {
@@ -151,7 +146,6 @@ public class BoxManager
 	 */
 	public void boxCollectorArmDeploy() {
 		boxCollector.armsExtend();
-		boxCollectorArmsState = BoxCollectorArmsState.DEPLOYED;
 	}
 	
 	/**
@@ -162,7 +156,6 @@ public class BoxManager
 	 */
 	public void boxCollectorArmRetract() {
 		boxCollector.armsRetract();
-		boxCollectorArmsState = BoxCollectorArmsState.RETRACTED;
 	}
 	
 	/**
