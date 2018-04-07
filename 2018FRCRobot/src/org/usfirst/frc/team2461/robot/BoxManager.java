@@ -128,9 +128,9 @@ public class BoxManager
 			} else {
 				boxCollector.armsRetract();
 			}
-		} else {
-			armToggleLock = false;
 		}
+		
+		armToggleLock = player.getAButton();
 		
 	}
 	
