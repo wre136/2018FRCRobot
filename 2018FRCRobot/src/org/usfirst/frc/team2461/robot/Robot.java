@@ -7,6 +7,10 @@
 
 package org.usfirst.frc.team2461.robot;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.usfirst.frc.team2461.robot.autonomous.AutoCode;
 import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAuto;
 import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAutoBasic;
@@ -19,6 +23,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
@@ -145,6 +151,8 @@ public class Robot extends IterativeRobot {
 	 */
 	private String plateLayout;
 	AutoCode autoCode;
+	
+	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -321,5 +329,23 @@ public class Robot extends IterativeRobot {
 	{
 		if(true)
 			printDataToScreen();
+		
+		RobotController.isBrownedOut();
+	}
+	
+	public void reportPower() throws IOException
+	{
+		FileWriter fileWriter = new FileWriter("BrownOutReport.txt",true);
+		PrintWriter printWriter = new PrintWriter(fileWriter);
+		
+		printWriter.println();
+		printWriter.println("PDP Voltage: " + pdp.getVoltage());
+		for(int i = 0; i < 16; i++) {
+			printWriter.println("PDP Channel " + i + " Current Draw: " + pdp.getCurrent(i));
+		}
+		
+		printWriter.flush();
+		printWriter.close();
+		
 	}
 }
