@@ -292,7 +292,7 @@ public class Robot extends IterativeRobot {
 //		chassis.debugWheel(2);
 //		chassis.debugWheel(3);
 //		
-//		boxManager.debug(0);
+		boxManager.debug(0);
 //		boxManager.debug(1);
 //		boxManager.debug(2);
 		

@@ -198,7 +198,11 @@ public class BoxManager
 	 * </p>
 	 */
 	private void boxCollectorSuckIn() {
-		if(player.getTriggerAxis(Hand.kRight) == 1) {
+		if(player.getTriggerAxis(Hand.kLeft) == 1 && player.getTriggerAxis(Hand.kRight) == 1) {
+			spinBox();
+			boxCollectorStateNow = BoxCollectorState.SPIN_BOX;
+			boxCollectorStatePrevious = BoxCollectorState.SPIT_OUT;
+		} else if(player.getTriggerAxis(Hand.kRight) == 1) {
 			return;
 		} else {
 			stopBoxSucker();
@@ -218,7 +222,11 @@ public class BoxManager
 	 * </p>
 	 */
 	private void boxCollectorSpitOut() {
-		if(player.getTriggerAxis(Hand.kLeft) == 1) {
+		if(player.getTriggerAxis(Hand.kLeft) == 1 && player.getTriggerAxis(Hand.kRight) == 1) {
+			spinBox();
+			boxCollectorStateNow = BoxCollectorState.SPIN_BOX;
+			boxCollectorStatePrevious = BoxCollectorState.SPIT_OUT;
+		} else if(player.getTriggerAxis(Hand.kLeft) == 1) {
 			return;
 		} else {
 			stopBoxSucker();
