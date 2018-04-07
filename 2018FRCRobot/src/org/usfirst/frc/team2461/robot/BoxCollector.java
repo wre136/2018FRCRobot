@@ -1,6 +1,5 @@
 package org.usfirst.frc.team2461.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 
