@@ -330,7 +330,15 @@ public class Robot extends IterativeRobot {
 		if(true)
 			printDataToScreen();
 		
-		RobotController.isBrownedOut();
+		if(RobotController.isBrownedOut())
+		{
+			try {
+				reportPower();
+			} catch(IOException e){
+				DriverStation.reportError("Cannot write to BrownOutReport.txt", false);
+			}
+			
+		}
 	}
 	
 	public void reportPower() throws IOException
@@ -339,6 +347,7 @@ public class Robot extends IterativeRobot {
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		
 		printWriter.println();
+		printWriter.println("Brown Out Detected: Match " + station.getMatchNumber() + " Time: " + station.getMatchTime());
 		printWriter.println("PDP Voltage: " + pdp.getVoltage());
 		for(int i = 0; i < 16; i++) {
 			printWriter.println("PDP Channel " + i + " Current Draw: " + pdp.getCurrent(i));
@@ -346,6 +355,5 @@ public class Robot extends IterativeRobot {
 		
 		printWriter.flush();
 		printWriter.close();
-		
 	}
 }
