@@ -7,16 +7,12 @@
 
 package org.usfirst.frc.team2461.robot;
 
-import java.util.LinkedList;
-
 import org.usfirst.frc.team2461.robot.autonomous.AutoCode;
 import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAuto;
 import org.usfirst.frc.team2461.robot.autonomous.DriveForwardAutoBasic;
 import org.usfirst.frc.team2461.robot.autonomous.MoveLeftAuto;
 import org.usfirst.frc.team2461.robot.autonomous.MoveRightAuto;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
